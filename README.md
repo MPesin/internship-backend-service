@@ -5,7 +5,7 @@ The server is developed in NodeJS; the database is MongoDB managed by the Mongoo
 # About The Server
 
 The server provides encrypted data storage of all information. All communication with the server use SSL protocol with XSS protection.
-Interactions with the server require authentication that's given based of the user's role (admin, internee, recruiter, HR etc.). 
+Interactions with the server require authentication that's given based of the users' role (admin, internee, recruiter, HR etc.). 
 The server also uses geocoding which allows the use of location based search.
 
 I hope you'll enjoy using this app as much as I enjoyed maikng it (:
