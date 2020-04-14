@@ -16,6 +16,8 @@ const RequirementSchema = new mongoose.Schema({
       'optional'
     ]
   }
+}, {
+  _id: false
 });
 
 export const InternshipSchema = new mongoose.Schema({

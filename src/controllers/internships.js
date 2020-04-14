@@ -1,4 +1,7 @@
 import CompanyDB from "../models/company.js";
+import {
+  onFail,
+} from './companies.js';
 
 // @desc    Get all Internships
 // @route   GET /api/v1/internships
@@ -28,13 +31,22 @@ export async function getInternships(req, res, next) {
 // @desc    Get single Internship
 // @route   GET /api/v1/internships/:id
 // @access  Public
-export function getInternship(req, res, next) {
-
-  res.status(200).json({
-    success: true,
-    data: `get internship ${req.params.id}`
-  });
+export async function getInternship(req, res, next) {
+  try {
+    const internship = (await findInternshipInDB(req.params.id)).internship;
+    if (!internship) {
+      onFailInternship(res);
+    } else {
+      res.status(200).json({
+        success: true,
+        data: internship
+      });
+    }
+  } catch (error) {
+    onFail(res, error);
+  }
 }
+
 
 // @desc    Create single Internship
 // @route   POST /api/v1/internships/
@@ -42,23 +54,22 @@ export function getInternship(req, res, next) {
 export async function createInternship(req, res, next) {
   try {
     const companyName = req.body.companyName;
-    const company = await CompanyDB.find({
+    const company = await CompanyDB.findOne({
       companyName: `${companyName}`
     });
 
-    if (company && company.length > 0) {
+    if (company) {
       const jobIdToAdd = req.body.internship.jobId;
-      const queryJodIdResult = company[0].internships.filter(doc => doc.jobId === jobIdToAdd);
-      console.log('queryJodIdResult', queryJodIdResult);
-      console.log(!queryJodIdResult, queryJodIdResult.length === 0);
+      const queryJodIdResult = company.internships.filter(doc => doc.jobId === jobIdToAdd);
 
       if (!queryJodIdResult || queryJodIdResult.length === 0) {
         // push the new intrenship to the company.
-
-        // res.status(201).json({
-        //   success: true,
-        //   data: intrenship
-        // });
+        company.internships.push(req.body.internship);
+        await company.save();
+        res.status(201).json({
+          success: true,
+          data: company.internships.filter(internship => internship.jobId == jobIdToAdd)
+        });
       } else {
         res.status(403).json({
           success: false,
@@ -72,8 +83,6 @@ export async function createInternship(req, res, next) {
       });
     }
   } catch (error) {
-    console.log(error);
-
     onFail(res, error);
   }
 }
@@ -81,27 +90,66 @@ export async function createInternship(req, res, next) {
 // @desc    Update single Internship
 // @route   PUT /api/v1/internships/:id
 // @access  Private
-export function updateInternship(req, res, next) {
-  res.status(200).json({
-    success: true,
-    data: `update internship ${req.params.id}`
-  });
+export async function updateInternship(req, res, next) {
+  try {
+    const result = await findInternshipInDB(req.params.id);
+    const internship = result.internship;
+    const company = result.company;
+    if (internship && company) {
+      internship.set(req.body);
+      await company.save();
+      res.status(200).json({
+        success: true,
+        data: company.internships.id(internship.id)
+      });
+    } else {
+      onFailInternship(res);
+    }
+  } catch (error) {
+    onFail(res, error);
+  }
 }
 
 // @desc    Delete single Internship
 // @route   DELETE /api/v1/internships/:id
 // @access  Private
-export function deleteInternship(req, res, next) {
-  res.status(200).json({
-    success: true,
-    data: `delete internship ${req.params.id}`
+export async function deleteInternship(req, res, next) {
+  try {
+    const result = await findInternshipInDB(req.params.id);
+    const internship = result.internship;
+    const company = result.company;
+    if (internship && company) {
+      internship.remove();
+      await company.save();
+      res.status(200).json({
+        success: true,
+      });
+    } else {
+      onFailInternship(res);
+    }
+  } catch (error) {
+    onFail(res, error);
+  }
+}
+
+export function onFailInternship(res) {
+  onFail(res, {
+    message: 'internship doesn\'t exist'
   });
 }
 
-function onFail(res, error) {
-  console.log(error.message);
-  res.status(400).json({
-    success: false,
-    error: error.message
+async function findInternshipInDB(id) {
+  const companies = await CompanyDB.find();
+  let internship = null;
+  let company = null;
+  companies.forEach(companyElement => {
+    if (!internship) {
+      internship = companyElement.internships.id(id);
+      company = companyElement;
+    }
   });
+  return {
+    company,
+    internship
+  };
 }
