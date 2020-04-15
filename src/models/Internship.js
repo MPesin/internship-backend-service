@@ -68,7 +68,7 @@ export const InternshipSchema = new mongoose.Schema({
   },
   estimatedEmploymentTime: {
     type: Number,
-    required: true,
+    required: [true, 'Please enter an estimated time of employment between 3 and 12 months'],
     min: [3, 'Internship must be at least 3 months'],
     max: [12, 'Internship must be no longer than 12 months (1 year)']
   },

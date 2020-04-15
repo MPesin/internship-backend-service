@@ -1,8 +1,11 @@
 import CompanyDB from "../models/company.js";
+import ErrorResponse from '../utils/ErrorResponse.js';
 
-// @desc    Get all Companies
-// @route   GET /api/v1/Companies
-// @access  Public
+/**
+ * Get all Companies
+ * @route   GET /api/v1/companies/
+ * @access  Public
+ */
 export async function getCompanies(req, res, next) {
   try {
     const Companies = await CompanyDB.find();
@@ -11,18 +14,20 @@ export async function getCompanies(req, res, next) {
       data: Companies
     });
   } catch (error) {
-    onFail(res, error);
+    next(error);
   }
 }
 
-// @desc    Get specific Companies
-// @route   GET /api/v1/Companies/:id
-// @access  Public
+/**
+ * Get a single Company
+ * @route   GET /api/v1/companies/:id
+ * @access  Public
+ */
 export async function getCompany(req, res, next) {
   try {
     const company = await CompanyDB.findById(req.params.id);
     if (!company) {
-      onFailCompany(res);
+      return next(new ErrorResponse(`company id ${req.params.id} doesn't exist`, 404));
     } else {
       res.status(200).json({
         success: true,
@@ -30,13 +35,15 @@ export async function getCompany(req, res, next) {
       });
     }
   } catch (error) {
-    onFail(res, error);
+    next(error);
   }
 }
 
-// @desc    Create Companies
-// @route   POST /api/v1/Companies/
-// @access  Private
+/**
+ * Create a Company
+ * @route   POST /api/v1/companies/
+ * @access  Private
+ */
 export async function createCompany(req, res, next) {
   try {
     const company = await CompanyDB.create(req.body);
@@ -45,13 +52,15 @@ export async function createCompany(req, res, next) {
       data: company
     });
   } catch (error) {
-    onFail(res, error);
+    next(error);
   }
 }
 
-// @desc    Update Companies
-// @route   PUT /api/v1/Companies/:id
-// @access  Private
+/**
+ * Update a single Company
+ * @route   PUT /api/v1/companies/:id
+ * @access  Private
+ */
 export async function updateCompany(req, res, next) {
   try {
     const company = await CompanyDB.findByIdAndUpdate(req.params.id, req.body, {
@@ -59,7 +68,7 @@ export async function updateCompany(req, res, next) {
       runValidators: true
     });
     if (!company) {
-      onFailCompany(res);
+      return next(new ErrorResponse(`company id ${req.params.id} doesn't exist`, 404));
     } else {
       res.status(200).json({
         success: true,
@@ -67,18 +76,20 @@ export async function updateCompany(req, res, next) {
       });
     }
   } catch (error) {
-    onFail(res, error);
+    next(error);
   }
 }
 
-// @desc    Delete Companies
-// @route   DELETE /api/v1/Companies/:id
-// @access  Private
+/**
+ * Delete a single Company
+ * @route   DELETE /api/v1/companies/:id
+ * @access  Private
+ */
 export async function deleteCompany(req, res, next) {
   try {
     const company = await CompanyDB.findByIdAndDelete(req.params.id);
     if (!company) {
-      onFailCompany(res);
+      return next(new ErrorResponse(`company id ${req.params.id} doesn't exist`, 404));
     } else {
       res.status(200).json({
         success: true,
@@ -86,20 +97,6 @@ export async function deleteCompany(req, res, next) {
       });
     }
   } catch (error) {
-    onFail(res, error);
+    next(error);
   }
-}
-
-export function onFail(res, error) {
-  console.log(error.message);
-  res.status(400).json({
-    success: false,
-    error: error.message
-  });
-}
-
-export function onFailCompany(res) {
-  onFail(res, {
-    message: 'company doesn\'t exist'
-  });
 }
