@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import geocoder from '../utils/geocoder.js';
+import ErrorResponse from '../utils/ErrorResponse.js';
 
 const RequirementSchema = new mongoose.Schema({
   requirement: {
@@ -20,7 +22,7 @@ const RequirementSchema = new mongoose.Schema({
   _id: false
 });
 
-export const InternshipSchema = new mongoose.Schema({
+const InternshipScheme = new mongoose.Schema({
   jobId: {
     type: Number,
     default: 0,
@@ -52,13 +54,7 @@ export const InternshipSchema = new mongoose.Schema({
     coordinates: {
       type: [Number],
       index: '2dsphere'
-    },
-    formattedAddress: String,
-    street: String,
-    city: String,
-    state: String,
-    zipcode: String,
-    country: String
+    }
   },
   requirements: {
     type: [RequirementSchema],
@@ -73,3 +69,39 @@ export const InternshipSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+
+
+// check if there's no identical jobId
+InternshipScheme.pre('validate', function (next) {
+  const allInternships = this.parent().internships;
+  const jobIds = allInternships.map(internship => internship.jobId);
+  console.log(jobIds);
+
+  if (jobIds.filter(id => id === this.jobId).length > 1) {
+    throw new ErrorResponse(`The jobId ${this.jobId} already exists in the database`, 403);
+  }
+  next();
+});
+
+// set the location
+// InternshipScheme.pre('save', async function (next) {
+//   const location = await geocoder.geocode(this.address);
+//   this.location = {
+//     type: 'Point',
+//     cooedinates: [location[0].longitude, location[0].latitude],
+//   }
+//   console.log(this.parent());
+
+//   this.address = {
+//     formattedAddress: location[0].formattedAddress,
+//     street: location[0].street,
+//     city: location[0].city,
+//     state: location[0].stateCode,
+//     zipcode: location[0].zipcode,
+//     country: location[0].countryCode
+//   };
+
+//   next();
+// });
+
+export default InternshipScheme;

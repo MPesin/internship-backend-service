@@ -1,6 +1,5 @@
 // import modules
 import express from 'express';
-import dotenv from 'dotenv';
 import morgan from 'morgan';
 import colors from 'colors';
 
@@ -13,11 +12,6 @@ import errorHandler from './middleware/errorMiddleware.js';
 // import router files
 import internships from './routes/internshipsRouter.js';
 import companies from './routes/companiesRouter.js';
-
-// load env vars
-dotenv.config({
-  path: './config/config.env'
-});
 
 // connect to database
 connectDB();

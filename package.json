@@ -5,8 +5,8 @@
 	"main": "./src/server.js",
 	"type": "module",
 	"scripts": {
-		"start": "NODE_ENV=production node ./src/server",
-		"dev": "nodemon ./src/server"
+		"start": "NODE_ENV=production node -r dotenv/config ./src/server dotenv_config_path=./config/config.env",
+		"dev": "nodemon -r dotenv/config ./src/server dotenv_config_path=./config/config.env"
 	},
 	"repository": {
 		"type": "git",
@@ -34,6 +34,7 @@
 		"express": "^4.17.1",
 		"mongoose": "^5.9.9",
 		"morgan": "^1.10.0",
+		"node-geocoder": "^3.27.0",
 		"slugify": "^1.4.0"
 	}
 }

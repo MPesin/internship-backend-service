@@ -1,8 +1,6 @@
 import mongoose from 'mongoose';
 import slugify from 'slugify';
-import {
-  InternshipSchema
-} from './InternshipScheme.js';
+import InternshipSchema from './internshipSchema.js';
 
 const CompanySchema = new mongoose.Schema({
   companyName: {
@@ -50,4 +48,6 @@ CompanySchema.pre('save', function (next) {
   next();
 });
 
-export default mongoose.model('Company', CompanySchema);
+const companyModel = mongoose.model('Company', CompanySchema);
+
+export default companyModel;

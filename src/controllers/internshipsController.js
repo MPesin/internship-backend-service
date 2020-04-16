@@ -64,19 +64,12 @@ export async function createInternship(req, res, next) {
 
   if (company) {
     const jobIdToAdd = req.body.internship.jobId;
-    const queryJodIdResult = company.internships.filter(doc => doc.jobId === jobIdToAdd);
-
-    if (!queryJodIdResult || queryJodIdResult.length === 0) {
-      // push the new intrenship to the company.
-      company.internships.push(req.body.internship);
-      await company.save();
-      res.status(201).json({
-        success: true,
-        data: company.internships.filter(internship => internship.jobId == jobIdToAdd)
-      });
-    } else {
-      return next(new ErrorResponse('The jobId of the internship already exists in the database', 403));
-    }
+    company.internships.push(req.body.internship);
+    await company.save();
+    res.status(201).json({
+      success: true,
+      data: company.internships.filter(internship => internship.jobId == jobIdToAdd)
+    });
   } else {
     return next(new ErrorResponse('Company doesn\'t exist', 403));
   }
