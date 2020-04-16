@@ -1,14 +1,18 @@
+// import modules
 import express from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
-import connectDB from '../config/db.js';
 import colors from 'colors';
-import errorHandler from './middleware/error.js';
 
-// route files
-import internships from './routes/internships.js';
-import companies from './routes/companies.js';
+// import DB initializer
+import connectDB from '../config/db.js';
 
+// import middleware
+import errorHandler from './middleware/errorMiddleware.js';
+
+// import router files
+import internships from './routes/internshipsRouter.js';
+import companies from './routes/companiesRouter.js';
 
 // load env vars
 dotenv.config({
@@ -20,7 +24,7 @@ connectDB();
 
 const app = express();
 
-// body parser
+// attach body parser
 app.use(express.json())
 
 // set logging middleware using the morgan logger in development

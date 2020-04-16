@@ -48,11 +48,9 @@ export const InternshipSchema = new mongoose.Schema({
     type: {
       type: String,
       enum: ['Point'],
-      required: false
     },
     coordinates: {
       type: [Number],
-      required: false,
       index: '2dsphere'
     },
     formattedAddress: String,
@@ -71,9 +69,7 @@ export const InternshipSchema = new mongoose.Schema({
     required: [true, 'Please enter an estimated time of employment between 3 and 12 months'],
     min: [3, 'Internship must be at least 3 months'],
     max: [12, 'Internship must be no longer than 12 months (1 year)']
-  },
-  createdOn: {
-    type: Date,
-    default: Date.now
   }
+}, {
+  timestamps: true
 });

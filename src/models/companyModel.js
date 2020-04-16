@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import {
   InternshipSchema
-} from './Internship.js';
+} from './InternshipScheme.js';
 
 const CompanySchema = new mongoose.Schema({
   companyName: {
@@ -36,11 +36,9 @@ const CompanySchema = new mongoose.Schema({
   },
   internships: {
     type: [InternshipSchema]
-  },
-  createdOn: {
-    type: Date,
-    default: Date.now
   }
+}, {
+  timestamps: true
 });
 
 export default mongoose.model('Company', CompanySchema);
