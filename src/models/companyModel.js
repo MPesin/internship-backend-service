@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import slugify from 'slugify';
 import {
   InternshipSchema
 } from './InternshipScheme.js';
@@ -39,6 +40,14 @@ const CompanySchema = new mongoose.Schema({
   }
 }, {
   timestamps: true
+});
+
+// create a company slug from the name
+CompanySchema.pre('save', function (next) {
+  this.slug = slugify(this.companyName, {
+    lower: true
+  });
+  next();
 });
 
 export default mongoose.model('Company', CompanySchema);

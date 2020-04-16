@@ -1,13 +1,10 @@
 [{
-    "_id": "5d713995b721c3bb38c1f5d0",
-    "user": "5d7a514b5d2c12c7449be045",
     "companyName": "Attorneys Without Contracts",
     "website": "https://lawcontracts.com",
-    "phone": "(111) 111-1111",
-    "email": "career@lawcontracts.com",
+    "phone": "(123) 123-1234",
+    "email": "firstCareer@lawcontracts.com",
     "internships": [{
       "jobId": 1234,
-      "field": "Law",
       "requirements": [{
           "requirement": "Finished High School",
           "type": "must"
@@ -25,22 +22,19 @@
           "type": "advantage"
         }
       ],
+      "field": "Law",
       "description": "Intern in contracts law",
       "address": "233 Bay State Rd Boston MA 02215",
       "estimatedEmploymentTime": 6
     }]
   },
   {
-    "_id": "5d713995b721c3bb38c1f5d0",
-    "user": "5d7a514b5d2c12c7449be045",
     "companyName": "QualityPeace",
     "website": "https://testpeace.com",
     "phone": "(111) 111-1111",
     "email": "career@testpeace.com",
     "internships": [{
       "jobId": 1235,
-      "description": "Intern for a QA position",
-      "field": "Software",
       "requirements": [{
           "requirement": "Finished High School",
           "type": "must"
@@ -58,7 +52,40 @@
           "type": "optional"
         }
       ],
+      "_id": "5e96171959f00c02c1b4d705",
+      "description": "Intern for a QA position",
+      "field": "Software",
       "address": "220 Pawtucket St, Lowell, MA 01854",
+      "estimatedEmploymentTime": 6
+    }]
+  },
+  {
+    "companyName": "Show Me The Money",
+    "website": "https://www.smtm.com",
+    "phone": "(123) 456-7890",
+    "email": "Career@smtm.com",
+    "internships": [{
+      "jobId": 1111,
+      "requirements": [{
+          "requirement": "Finished High School",
+          "type": "must"
+        },
+        {
+          "requirement": "Knowledge of foreign language",
+          "type": "optional"
+        },
+        {
+          "requirement": "Good Level of English",
+          "type": "must"
+        },
+        {
+          "requirement": "Good math skills",
+          "type": "advantage"
+        }
+      ],
+      "field": "Finance",
+      "description": "Intern in dealing stocks",
+      "address": "123 Arlozorov, Tel Aviv, Israel, 844962",
       "estimatedEmploymentTime": 6
     }]
   }

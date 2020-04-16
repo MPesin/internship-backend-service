@@ -7,6 +7,7 @@ export default function errorHandler(err, req, res, next) {
     message: err.message,
     ...err
   };
+
   console.log(`${err.stack}`.red);
 
   // handle mongoose bad ObjectId
@@ -17,14 +18,12 @@ export default function errorHandler(err, req, res, next) {
 
   // handle mongoose double id
   if (err.code === 11000) {
-    const message = `Duplicate id entered, this id already exists`;
+    const message = `Duplicate item entered, \'${JSON.stringify(err.keyValue).replace(/"+/g, '')}\' already exists`;
     error = new ErrorResponse(message, 404);
   }
 
   // handle mangoose validation error
   if (err.name === 'ValidationError') {
-    console.log(err.errors);
-
     const message = Object.values(err.errors).map(err => err.message);
     error = new ErrorResponse(message, 404);
   }
