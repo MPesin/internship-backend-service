@@ -31,16 +31,11 @@ const PointSchema = new mongoose.Schema({
   },
   coordinates: {
     $type: [],
-    required: true,
-    // index: '2dsphere'
+    required: true
   }
 }, {
   _id: false,
   typeKey: '$type'
-});
-
-PointSchema.index({
-  'coordinates': '2dsphere'
 });
 
 const InternshipSchema = new mongoose.Schema({
@@ -84,9 +79,22 @@ const InternshipSchema = new mongoose.Schema({
     required: [true, 'Please enter an estimated time of employment between 3 and 12 months'],
     min: [3, 'Internship must be at least 3 months'],
     max: [12, 'Internship must be no longer than 12 months (1 year)']
-  }
+  },
+  companyName: String
 }, {
   timestamps: true
+});
+
+// set index for the GeoJSON field
+InternshipSchema.index({
+  'geoPosition': '2dsphere'
+});
+
+// set company name
+InternshipSchema.pre('save', function (next) {
+  const parent = this.parent();
+  this.companyName = parent.companyName;
+  next();
 });
 
 // check if there's no identical jobId
@@ -103,6 +111,7 @@ InternshipSchema.pre('validate', function (next) {
   next();
 });
 
+// set the GeoJSON field
 InternshipSchema.pre('save', async function (next) {
 
   const geoDetails = await geocoder.geocode(this.fullAddress);

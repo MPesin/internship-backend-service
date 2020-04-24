@@ -134,17 +134,19 @@ export async function getInternshipsInRadius(req, res, next) {
   const lat = geoDetails[0].latitude;
   const long = geoDetails[0].longitude;
 
+  console.log(`lat = ${lat}, long = ${long}`);
+
   // calculate radius in RAD 
   const raduis = distance / process.env.EARTH_RADIUS_KM;
 
   const nearbyInternships = await CompanyDB.find({
-    internships: {
-      geoPosition: {
-        $geoWithin: {
-          $centerSphere: [
-            [long, lat], raduis
-          ]
-        }
+    'internships.geoPosition': {
+      // geoPosition: {
+      $geoWithin: {
+        $centerSphere: [
+          [long, lat], raduis
+        ]
+        // }
       }
     }
   });
