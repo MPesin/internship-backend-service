@@ -24,7 +24,7 @@
       ],
       "field": "Law",
       "description": "Intern in contracts law",
-      "address": "233 Bay State Rd Boston MA 02215",
+      "fullAddress": "233 Bay State Rd Boston MA 02215",
       "estimatedEmploymentTime": 6
     }]
   },
@@ -55,7 +55,7 @@
       "_id": "5e96171959f00c02c1b4d705",
       "description": "Intern for a QA position",
       "field": "Software",
-      "address": "220 Pawtucket St, Lowell, MA 01854",
+      "fullAddress": "220 Pawtucket St, Lowell, MA 01854",
       "estimatedEmploymentTime": 6
     }]
   },
@@ -85,7 +85,7 @@
       ],
       "field": "Finance",
       "description": "Intern in dealing stocks",
-      "address": "123 Arlozorov, Tel Aviv, Israel, 844962",
+      "fullAddress": "123 Arlozorov, Tel Aviv, Israel, 844962",
       "estimatedEmploymentTime": 6
     }]
   }

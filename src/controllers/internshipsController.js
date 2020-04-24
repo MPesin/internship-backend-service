@@ -1,6 +1,6 @@
 import CompanyDB from '../models/companyModel.js';
 import ErrorResponse from '../utils/ErrorResponse.js';
-
+import geocoder from '../utils/geocoder.js';
 
 /**
  * Get all Internships
@@ -21,6 +21,7 @@ export async function getInternships(req, res, next) {
   });
   res.status(200).json({
     success: true,
+    count: dataForRespond.length,
     data: dataForRespond
   });
 }
@@ -109,11 +110,50 @@ export async function deleteInternship(req, res, next) {
     internship.remove();
     await company.save();
     res.status(200).json({
-      success: true,
+      success: true
     });
   } else {
     return next(new ErrorResponse('internship doesn\'t exist', 400));
   }
+}
+
+/**
+ * Get internships inside a radius
+ * @route   GET /api/v1/internships/raduis/:address/:distance
+ * @access  Private
+ */
+export async function getInternshipsInRadius(req, res, next) {
+  const {
+    address,
+    distance
+  } = req.params;
+
+  // get longtitude and lantitude 
+  const geoDetails = await geocoder.geocode(address);
+
+  const lat = geoDetails[0].latitude;
+  const long = geoDetails[0].longitude;
+
+  // calculate radius in RAD 
+  const raduis = distance / process.env.EARTH_RADIUS_KM;
+
+  const nearbyInternships = await CompanyDB.find({
+    internships: {
+      geoPosition: {
+        $geoWithin: {
+          $centerSphere: [
+            [long, lat], raduis
+          ]
+        }
+      }
+    }
+  });
+
+  res.status(200).json({
+    success: true,
+    count: nearbyInternships.length,
+    data: nearbyInternships
+  });
 }
 
 /**

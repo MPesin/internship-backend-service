@@ -4,13 +4,13 @@ import ErrorResponse from '../utils/ErrorResponse.js';
 
 const RequirementSchema = new mongoose.Schema({
   requirement: {
-    type: String,
+    $type: String,
     required: true,
     trim: true,
     maxlength: [100, 'Requirement text is limited to 100 charachters']
   },
   type: {
-    type: String,
+    $type: String,
     required: true,
     enum: [
       'must',
@@ -19,13 +19,35 @@ const RequirementSchema = new mongoose.Schema({
     ]
   }
 }, {
-  _id: false
+  _id: false,
+  typeKey: '$type'
 });
 
-const InternshipScheme = new mongoose.Schema({
+const PointSchema = new mongoose.Schema({
+  type: {
+    $type: String,
+    enum: ['Point'],
+    required: true
+  },
+  coordinates: {
+    $type: [],
+    required: true,
+    // index: '2dsphere'
+  }
+}, {
+  _id: false,
+  typeKey: '$type'
+});
+
+PointSchema.index({
+  'coordinates': '2dsphere'
+});
+
+const InternshipSchema = new mongoose.Schema({
   jobId: {
     type: Number,
     default: 0,
+    index: true
   },
   field: {
     type: String,
@@ -41,21 +63,18 @@ const InternshipScheme = new mongoose.Schema({
     trim: true,
     maxlength: [600, 'Description text is limited to 600 charachters']
   },
-
-  address: {
+  fullAddress: {
     type: String,
-    required: [true, 'Please Enter address']
+    required: [true, 'Please Enter full address']
   },
-  location: { // GeoJSON
-    type: {
-      type: String,
-      enum: ['Point'],
-    },
-    coordinates: {
-      type: [Number],
-      index: '2dsphere'
-    }
+  address: {
+    formattedAddress: String,
+    street: String,
+    city: String,
+    state: String,
+    country: String
   },
+  geoPosition: PointSchema,
   requirements: {
     type: [RequirementSchema],
     required: true
@@ -70,38 +89,45 @@ const InternshipScheme = new mongoose.Schema({
   timestamps: true
 });
 
-
 // check if there's no identical jobId
-InternshipScheme.pre('validate', function (next) {
+InternshipSchema.pre('validate', function (next) {
+
   const allInternships = this.parent().internships;
   const jobIds = allInternships.map(internship => internship.jobId);
-  console.log(jobIds);
 
+  // check to see if there duplicants of the new jobId
   if (jobIds.filter(id => id === this.jobId).length > 1) {
     throw new ErrorResponse(`The jobId ${this.jobId} already exists in the database`, 403);
   }
+
   next();
 });
 
-// set the location
-// InternshipScheme.pre('save', async function (next) {
-//   const location = await geocoder.geocode(this.address);
-//   this.location = {
-//     type: 'Point',
-//     cooedinates: [location[0].longitude, location[0].latitude],
-//   }
-//   console.log(this.parent());
+InternshipSchema.pre('save', async function (next) {
 
-//   this.address = {
-//     formattedAddress: location[0].formattedAddress,
-//     street: location[0].street,
-//     city: location[0].city,
-//     state: location[0].stateCode,
-//     zipcode: location[0].zipcode,
-//     country: location[0].countryCode
-//   };
+  const geoDetails = await geocoder.geocode(this.fullAddress);
 
-//   next();
-// });
+  const lat = geoDetails[0].latitude;
+  const long = geoDetails[0].longitude;
 
-export default InternshipScheme;
+  this.geoPosition = {
+    type: "Point",
+    coordinates: [long, lat]
+  };
+
+  this.address = {
+    formattedAddress: geoDetails[0].formattedAddress,
+    street: geoDetails[0].streetName,
+    city: geoDetails[0].city,
+    state: geoDetails[0].stateCode,
+    country: geoDetails[0].countryCode
+  };
+
+  // ignore original address
+  this.fullAddress = undefined;
+
+  next();
+});
+
+
+export default InternshipSchema;
