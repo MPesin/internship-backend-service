@@ -8,10 +8,16 @@ import ErrorResponse from '../utils/ErrorResponse.js';
  * @access  Public
  */
 export async function getCompanies(req, res, next) {
-  const Companies = await CompanyDB.find();
+  // get query
+  let queryString = JSON.stringify(req.query);
+  queryString = queryString.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+  const query = JSON.parse(queryString);
+
+  const companies = await CompanyDB.find(query);
   res.status(200).json({
     success: true,
-    data: Companies
+    count: companies.length,
+    data: companies
   });
 }
 

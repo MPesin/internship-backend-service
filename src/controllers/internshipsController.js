@@ -8,21 +8,27 @@ import geocoder from '../utils/geocoder.js';
  * @access  Public
  */
 export async function getInternships(req, res, next) {
-  const dataForRespond = [];
-  await CompanyDB.find({}, (err, doc) => {
+  // get query
+  console.log(req.query);
+
+  let queryString = JSON.stringify(req.query);
+  console.log(queryString);
+  queryString = queryString.replace(/(?<=(^{|,)")\b(\w+)\b/g, match => `internships.${match}`);
+  console.log(queryString);
+  queryString = queryString.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+  const query = JSON.parse(queryString);
+  console.log(queryString);
+
+  const internships = [];
+  await CompanyDB.find(query, (err, doc) => {
     if (!err) {
-      doc.forEach(company => {
-        dataForRespond.push({
-          companyName: company.companyName,
-          internships: company.internships
-        });
-      });
+      internships.push(doc.intenships)
     }
   });
   res.status(200).json({
     success: true,
-    count: dataForRespond.length,
-    data: dataForRespond
+    count: internships.length,
+    data: internships
   });
 }
 
@@ -133,8 +139,6 @@ export async function getInternshipsInRadius(req, res, next) {
 
   const lat = geoDetails[0].latitude;
   const long = geoDetails[0].longitude;
-
-  console.log(`lat = ${lat}, long = ${long}`);
 
   // calculate radius in RAD 
   const raduis = distance / process.env.EARTH_RADIUS_KM;
