@@ -3,7 +3,7 @@ import geocoder from '../utils/geocoder.js';
 import ErrorResponse from '../utils/ErrorResponse.js';
 
 const RequirementSchema = new mongoose.Schema({
-  requirement: {
+  description: {
     $type: String,
     required: true,
     trim: true,

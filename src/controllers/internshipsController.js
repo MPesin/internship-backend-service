@@ -8,23 +8,17 @@ import geocoder from '../utils/geocoder.js';
  * @access  Public
  */
 export async function getInternships(req, res, next) {
-  // get query
-  console.log(req.query);
-
+  // get query data and convert to strign
   let queryString = JSON.stringify(req.query);
-  console.log(queryString);
-  queryString = queryString.replace(/(?<=(^{|,)")\b(\w+)\b/g, match => `internships.${match}`);
-  console.log(queryString);
-  queryString = queryString.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
-  const query = JSON.parse(queryString);
-  console.log(queryString);
 
-  const internships = [];
-  await CompanyDB.find(query, (err, doc) => {
-    if (!err) {
-      internships.push(doc.intenships)
-    }
-  });
+  // filter query
+  queryString = queryString.replace(/(?<=(^{|,)")\b(\w+)\b/g, match => `internships.${match}`);
+  queryString = queryString.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+
+  // convert back to JS pbject
+  const query = JSON.parse(queryString);
+
+  const internships = await CompanyDB.find(query, 'internships');
   res.status(200).json({
     success: true,
     count: internships.length,

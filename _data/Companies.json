@@ -6,19 +6,19 @@
     "internships": [{
       "jobId": 1234,
       "requirements": [{
-          "requirement": "Finished High School",
+          "description": "Finished High School",
           "type": "must"
         },
         {
-          "requirement": "Knowledge of foreign language",
+          "description": "Knowledge of foreign language",
           "type": "optional"
         },
         {
-          "requirement": "Good Level of English",
+          "description": "Good Level of English",
           "type": "must"
         },
         {
-          "requirement": "Participate in debate contests",
+          "description": "Participate in debate contests",
           "type": "advantage"
         }
       ],
@@ -36,19 +36,19 @@
     "internships": [{
       "jobId": 1235,
       "requirements": [{
-          "requirement": "Finished High School",
+          "description": "Finished High School",
           "type": "must"
         },
         {
-          "requirement": "Knowledge of OO programming",
+          "description": "Knowledge of OO programming",
           "type": "must"
         },
         {
-          "requirement": "Knowledge of Git",
+          "description": "Knowledge of Git",
           "type": "advantage"
         },
         {
-          "requirement": "Experience with writing STD and STR documents",
+          "description": "Experience with writing STD and STR documents",
           "type": "optional"
         }
       ],
@@ -56,7 +56,7 @@
       "description": "Intern for a QA position",
       "field": "Software",
       "fullAddress": "220 Pawtucket St, Lowell, MA 01854",
-      "estimatedEmploymentTime": 6
+      "estimatedEmploymentTime": 3
     }]
   },
   {
@@ -67,26 +67,26 @@
     "internships": [{
       "jobId": 1111,
       "requirements": [{
-          "requirement": "Finished High School",
+          "description": "Finished High School",
           "type": "must"
         },
         {
-          "requirement": "Knowledge of foreign language",
+          "description": "Knowledge of foreign language",
           "type": "optional"
         },
         {
-          "requirement": "Good Level of English",
+          "description": "Good Level of English",
           "type": "must"
         },
         {
-          "requirement": "Good math skills",
+          "description": "Good math skills",
           "type": "advantage"
         }
       ],
       "field": "Finance",
       "description": "Intern in dealing stocks",
       "fullAddress": "123 Arlozorov, Tel Aviv, Israel, 844962",
-      "estimatedEmploymentTime": 6
+      "estimatedEmploymentTime": 9
     }]
   }
 ]
