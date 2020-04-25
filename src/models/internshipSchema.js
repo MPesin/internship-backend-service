@@ -80,7 +80,10 @@ const InternshipSchema = new mongoose.Schema({
     min: [3, 'Internship must be at least 3 months'],
     max: [12, 'Internship must be no longer than 12 months (1 year)']
   },
-  companyName: String
+  companyName: {
+    type: String,
+    required: [true, 'Please add the name of the company that offers the internship']
+  }
 }, {
   timestamps: true
 });
@@ -88,13 +91,6 @@ const InternshipSchema = new mongoose.Schema({
 // set index for the GeoJSON field
 InternshipSchema.index({
   'geoPosition': '2dsphere'
-});
-
-// set company name
-InternshipSchema.pre('save', function (next) {
-  const parent = this.parent();
-  this.companyName = parent.companyName;
-  next();
 });
 
 // check if there's no identical jobId

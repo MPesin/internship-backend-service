@@ -49,22 +49,15 @@ export async function getInternship(req, res, next) {
  * Create single Internship
  * @route   POST /api/v1/internships/
  * @access  Private
- * @param {*} req the request from the endpoint, the body is a JSON object: 
- * ```json
- * req.body = {
- * "companyNams": <string>,
- * "internship": <internship_data>
- * }
- * ```
  */
 export async function createInternship(req, res, next) {
-  const companyName = req.body.companyName;
+  const internship = req.body;
   const company = await CompanyDB.findOne({
-    companyName: `${companyName}`
+    companyName: `${internship.companyName}`
   });
 
   if (company) {
-    const jobIdToAdd = req.body.internship.jobId;
+    const jobIdToAdd = internship.jobId;
     company.internships.push(req.body.internship);
     await company.save();
     res.status(201).json({
