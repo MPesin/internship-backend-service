@@ -1,5 +1,8 @@
 import CompanyDB from "../models/companyModel.js";
 import ErrorResponse from '../utils/ErrorResponse.js';
+import {
+  filterQuery
+} from '../utils/filters.js';
 
 
 /**
@@ -8,12 +11,19 @@ import ErrorResponse from '../utils/ErrorResponse.js';
  * @access  Public
  */
 export async function getCompanies(req, res, next) {
-  // get query
-  let queryString = JSON.stringify(req.query);
-  queryString = queryString.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
-  const query = JSON.parse(queryString);
 
-  const companies = await CompanyDB.find(query);
+  const queryFiltered = filterQuery(req.query);
+
+  const query = CompanyDB.find(queryFiltered.query);
+
+  if (queryFiltered !== '') {
+    query.select(queryFiltered.select);
+  }
+
+  query.sort(queryFiltered.sort);
+
+  const companies = await query;
+
   res.status(200).json({
     success: true,
     count: companies.length,

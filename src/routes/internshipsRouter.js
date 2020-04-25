@@ -16,7 +16,7 @@ router
   .delete(asyncMiddleware(controller.deleteInternship));
 
 router
-  .route('/radius/:address/:distance')
+  .route('/radius/:address/:distance/:unit')
   .get(asyncMiddleware(controller.getInternshipsInRadius));
 
 export default router;

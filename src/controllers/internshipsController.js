@@ -1,6 +1,9 @@
 import CompanyDB from '../models/companyModel.js';
 import ErrorResponse from '../utils/ErrorResponse.js';
 import geocoder from '../utils/geocoder.js';
+import {
+  filterQuery
+} from '../utils/filters.js';
 
 /**
  * Get all Internships
@@ -8,17 +11,19 @@ import geocoder from '../utils/geocoder.js';
  * @access  Public
  */
 export async function getInternships(req, res, next) {
-  // get query data and convert to strign
-  let queryString = JSON.stringify(req.query);
 
-  // filter query
-  queryString = queryString.replace(/(?<=(^{|,)")\b(\w+)\b/g, match => `internships.${match}`);
-  queryString = queryString.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+  const queryFiltered = filterQuery(req.query, 'internships');
 
-  // convert back to JS pbject
-  const query = JSON.parse(queryString);
+  const query = CompanyDB.find(queryFiltered.query);
 
-  const internships = await CompanyDB.find(query, 'internships');
+  if (queryFiltered !== '') {
+    query.select(queryFiltered.select);
+  }
+
+  query.sort(queryFiltered.sort);
+
+  const internships = await query;
+
   res.status(200).json({
     success: true,
     count: internships.length,
@@ -112,13 +117,14 @@ export async function deleteInternship(req, res, next) {
 
 /**
  * Get internships inside a radius
- * @route   GET /api/v1/internships/raduis/:address/:distance
+ * @route   GET /api/v1/internships/raduis/:address/:distance/:unit
  * @access  Private
  */
 export async function getInternshipsInRadius(req, res, next) {
   const {
     address,
-    distance
+    distance,
+    unit
   } = req.params;
 
   // get longtitude and lantitude 
@@ -128,16 +134,22 @@ export async function getInternshipsInRadius(req, res, next) {
   const long = geoDetails[0].longitude;
 
   // calculate radius in RAD 
-  const raduis = distance / process.env.EARTH_RADIUS_KM;
+  const unitLowerCase = unit.toLowerCase();
+  let raduis;
+  if (unitLowerCase === 'mi') { // if unit is `mi` use miles
+    raduis = distance / process.env.EARTH_RADIUS_MI;
+  } else if (unitLowerCase === 'km') {
+    raduis = distance / process.env.EARTH_RADIUS_KM; // default is KM
+  } else {
+    return next(new ErrorResponse('unit is not legal', 400));
+  }
 
   const nearbyInternships = await CompanyDB.find({
     'internships.geoPosition': {
-      // geoPosition: {
       $geoWithin: {
         $centerSphere: [
           [long, lat], raduis
         ]
-        // }
       }
     }
   });
