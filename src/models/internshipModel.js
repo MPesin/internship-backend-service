@@ -47,14 +47,12 @@ const InternshipSchema = new mongoose.Schema({
   field: {
     type: String,
     required: [true, 'Please add a field'],
-    unique: true,
     trim: true,
     maxlength: [50, 'Field cannot be more than 50 charachters']
   },
   description: {
     type: String,
     required: [true, 'Please add description'],
-    unique: true,
     trim: true,
     maxlength: [600, 'Description text is limited to 600 charachters']
   },
@@ -77,12 +75,13 @@ const InternshipSchema = new mongoose.Schema({
   estimatedEmploymentTime: {
     type: Number,
     required: [true, 'Please enter an estimated time of employment between 3 and 12 months'],
-    min: [3, 'Internship must be at least 3 months'],
-    max: [12, 'Internship must be no longer than 12 months (1 year)']
+    min: [14, 'Internship must be at least 14 days'],
+    max: [365, 'Internship must be no longer than 365 days (1 year)']
   },
-  companyName: {
-    type: String,
-    required: [true, 'Please add the name of the company that offers the internship']
+  company: {
+    type: mongoose.ObjectId,
+    ref: 'Company',
+    required: true
   }
 }, {
   timestamps: true
@@ -93,19 +92,19 @@ InternshipSchema.index({
   'geoPosition': '2dsphere'
 });
 
-// check if there's no identical jobId
-InternshipSchema.pre('validate', function (next) {
+// check if there's no identical jobId in the company
+// InternshipSchema.pre('validate', async function (next) {
 
-  const allInternships = this.parent().internships;
-  const jobIds = allInternships.map(internship => internship.jobId);
+//   const allCompanyInternships = await this.model('Company').findById(this.company).internships;
+//   const jobIds = allCompanyInternships.map(internship => internship.jobId);
 
-  // check to see if there duplicants of the new jobId
-  if (jobIds.filter(id => id === this.jobId).length > 1) {
-    throw new ErrorResponse(`The jobId ${this.jobId} already exists in the database`, 403);
-  }
+//   // check to see if there duplicants of the new jobId
+//   if (jobIds.filter(id => id === this.jobId).length > 1) {
+//     throw new ErrorResponse(`The jobId ${this.jobId} already exists in the database`, 403);
+//   }
 
-  next();
-});
+//   next();
+// });
 
 // set the GeoJSON field
 InternshipSchema.pre('save', async function (next) {
@@ -134,5 +133,6 @@ InternshipSchema.pre('save', async function (next) {
   next();
 });
 
+const internshipModel = mongoose.model('Internship', InternshipSchema);
 
-export default InternshipSchema;
+export default internshipModel;

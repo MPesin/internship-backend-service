@@ -22,11 +22,37 @@ export async function getCompanies(req, res, next) {
 
   query.sort(queryFiltered.sort);
 
+  // pagination
+  const limit = queryFiltered.limit;
+  const page = queryFiltered.page;
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const total = await CompanyDB.countDocuments();
+
+  const pagination = {};
+
+  query.skip(startIndex).limit(limit);
+
   const companies = await query;
+
+  if (startIndex > 0) {
+    pagination.prev = {
+      page: page - 1,
+      limit
+    }
+  }
+
+  if (endIndex < total) {
+    pagination.next = {
+      page: page + 1,
+      limit
+    }
+  }
 
   res.status(200).json({
     success: true,
     count: companies.length,
+    pagination,
     data: companies
   });
 }

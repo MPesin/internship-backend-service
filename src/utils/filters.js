@@ -6,7 +6,7 @@
  */
 export function filterQuery(query, subdocument = '') {
   // fields to remove from the query before filtering with regex
-  const removeFields = ['select', 'sort'];
+  const removeFields = ['select', 'sort', 'page', 'limit'];
 
   // get query and make a copy
   let reqQuery = {
@@ -49,16 +49,21 @@ export function filterQuery(query, subdocument = '') {
   const selectedString = selected.join(' ');
 
   // handle sorting
-  let sortString = '';
+  let sort = '';
   if (query.sort) {
-    sortString = query.sort.split(',').join(' ');
+    sort = query.sort.split(',').join(' ');
   } else {
-    sortString = '-createdAt';
+    sort = '-createdAt';
   }
+
+  const page = parseInt(query.page || process.env.DEFAULT_PAGE, 10);
+  const limit = parseInt(query.limit || process.env.DEFAULT_LIMIT, 10);
 
   return {
     query: queryFiltered,
     select: selectedString,
-    sort: sortString
+    sort,
+    page,
+    limit
   }
 }

@@ -1,94 +1,22 @@
 [{
+    "_id": "5ea45ccba36def078c49dbdb",
     "companyName": "Attorneys Without Contracts",
     "website": "https://lawcontracts.com",
     "phone": "(123) 123-1234",
-    "email": "firstCareer@lawcontracts.com",
-    "internships": [{
-      "jobId": 1234,
-      "requirements": [{
-          "description": "Finished High School",
-          "type": "must"
-        },
-        {
-          "description": "Knowledge of foreign language",
-          "type": "optional"
-        },
-        {
-          "description": "Good Level of English",
-          "type": "must"
-        },
-        {
-          "description": "Participate in debate contests",
-          "type": "advantage"
-        }
-      ],
-      "companyName": "Attorneys Without Contracts",
-      "field": "Law",
-      "description": "Intern in contracts law",
-      "fullAddress": "233 Bay State Rd Boston MA 02215",
-      "estimatedEmploymentTime": 6
-    }]
+    "email": "firstCareer@lawcontracts.com"
   },
   {
+    "_id": "5ea45ccba36def078c49dbdd",
     "companyName": "QualityPeace",
     "website": "https://testpeace.com",
     "phone": "(111) 111-1111",
-    "email": "career@testpeace.com",
-    "internships": [{
-      "jobId": 1235,
-      "requirements": [{
-          "description": "Finished High School",
-          "type": "must"
-        },
-        {
-          "description": "Knowledge of OO programming",
-          "type": "must"
-        },
-        {
-          "description": "Knowledge of Git",
-          "type": "advantage"
-        },
-        {
-          "description": "Experience with writing STD and STR documents",
-          "type": "optional"
-        }
-      ],
-      "companyName": "QualityPeace",
-      "description": "Intern for a QA position",
-      "field": "Software",
-      "fullAddress": "220 Pawtucket St, Lowell, MA 01854",
-      "estimatedEmploymentTime": 3
-    }]
+    "email": "career@testpeace.com"
   },
   {
+    "_id": "5ea45ccba36def078c49dbdf",
     "companyName": "Show Me The Money",
     "website": "https://www.smtm.com",
     "phone": "(123) 456-7890",
-    "email": "Career@smtm.com",
-    "internships": [{
-      "jobId": 1111,
-      "requirements": [{
-          "description": "Finished High School",
-          "type": "must"
-        },
-        {
-          "description": "Knowledge of foreign language",
-          "type": "optional"
-        },
-        {
-          "description": "Good Level of English",
-          "type": "must"
-        },
-        {
-          "description": "Good math skills",
-          "type": "advantage"
-        }
-      ],
-      "companyName": "Show Me The Money",
-      "field": "Finance",
-      "description": "Intern in dealing stocks",
-      "fullAddress": "123 Arlozorov, Tel Aviv, Israel, 844962",
-      "estimatedEmploymentTime": 9
-    }]
+    "email": "Career@smtm.com"
   }
 ]

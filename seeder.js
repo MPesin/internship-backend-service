@@ -4,12 +4,14 @@ import fs from 'fs';
 import coloers from 'colors';
 import connectDB from './config/db.js';
 import companyModel from './src/models/companyModel.js';
+import internshipModel from './src/models/internshipModel.js';
 
 // connect database
 connectDB();
 
 // load data from file
 const companies = loadJsonDataFromFile('Companies');
+const internships = loadJsonDataFromFile('Internships');
 
 // start main
 main();
@@ -18,8 +20,10 @@ main();
 
 async function main() {
   if (process.argv.includes('-l')) {
+    await loadData(internshipModel, internships);
     await loadData(companyModel, companies);
   } else if (process.argv.includes('-d')) {
+    await deleteAllData(internshipModel);
     await deleteAllData(companyModel);
   } else {
     console.log('flags :\n-l - to load data to database\n-d - to delete all data from the database');
@@ -33,7 +37,7 @@ function loadJsonDataFromFile(dataName) {
 
 async function loadData(model, data) {
   try {
-    console.log('Loading Data...'.green);
+    console.log(`Loading Data of ${model.modelName}...`.green);
     await model.create(data);
     console.log('Data Loaded to the Database'.bgGreen);
   } catch (error) {
@@ -43,7 +47,7 @@ async function loadData(model, data) {
 
 async function deleteAllData(model) {
   try {
-    console.log('Deleting Data...'.red);
+    console.log(`Deleting Data of ${model.modelName}...`.red);
     await model.deleteMany();
     console.log('All the Data Deleted from the Database'.bgRed);
   } catch (error) {

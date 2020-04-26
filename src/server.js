@@ -1,4 +1,5 @@
 // import modules
+import path from 'path';
 import express from 'express';
 import morgan from 'morgan';
 import colors from 'colors';
@@ -19,7 +20,13 @@ connectDB();
 const app = express();
 
 // attach body parser
-app.use(express.json())
+app.use(express.json());
+
+
+
+// set resources folder
+app.use(express.static(path.join(getRootDir(), 'resources')));
+
 
 // set logging middleware using the morgan logger in development
 if (process.env.NODE_ENV === 'development') {
@@ -27,8 +34,8 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // mount routers
-app.use('/api/v1/internships', internships)
-app.use('/api/v1/companies', companies)
+app.use('/api/v1/companies', companies);
+app.use('/api/v1/internships', internships);
 
 // mount middleware
 app.use(errorHandler);
@@ -46,3 +53,12 @@ process.on('unhandledRejection', (err, promis) => {
   // close and exit server
   server.close(() => process.exit(1))
 });
+
+// methods
+
+function getRootDir() {
+  const srcDirPath = path.dirname(
+    import.meta.url);
+  const lastSlashIndex = srcDirPath.lastIndexOf('/');
+  return srcDirPath.slice(0, lastSlashIndex)
+}

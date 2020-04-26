@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import slugify from 'slugify';
-import InternshipSchema from './internshipSchema.js';
 
 const CompanySchema = new mongoose.Schema({
   companyName: {
@@ -33,11 +32,18 @@ const CompanySchema = new mongoose.Schema({
     type: String, // file name
     default: 'no-photo.jpg'
   },
-  internships: {
-    type: [InternshipSchema]
-  }
+  internships: [{
+    type: mongoose.ObjectId,
+    ref: 'Internship'
+  }]
 }, {
-  timestamps: true
+  timestamps: true,
+  toJSON: {
+    virtuals: true
+  },
+  toObject: {
+    virtuals: true
+  }
 });
 
 // create a company slug from the name
@@ -47,6 +53,13 @@ CompanySchema.pre('save', function (next) {
   });
   next();
 });
+
+// CompanySchema.virtual('internships', {
+//   ref: 'Internship',
+//   localField: '_id',
+//   foreignField: 'company',
+//   justOne: false
+// });
 
 const companyModel = mongoose.model('Company', CompanySchema);
 
