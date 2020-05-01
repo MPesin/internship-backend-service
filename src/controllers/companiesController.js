@@ -66,10 +66,13 @@ export async function updateCompany(req, res, next) {
  * @access  Private
  */
 export async function deleteCompany(req, res, next) {
-  const company = await CompanyModel.findByIdAndDelete(req.params.id);
+  const company = await CompanyModel.findById(req.params.id);
   if (!company) {
     return next(new ErrorResponse(`company id ${req.params.id} doesn't exist`, 404));
   } else {
+    // seperate remove from find to trigger 'remove' middleware
+    company.remove();
+
     res.status(200).json({
       success: true,
       data: company

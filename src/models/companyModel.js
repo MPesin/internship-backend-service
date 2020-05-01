@@ -50,6 +50,14 @@ CompanySchema.pre('save', function (next) {
   next();
 });
 
+// cascade remove internships related to company when it's removed
+CompanySchema.pre('remove', async function (next) {
+  await this.model('Internship').deleteMany({
+    company: this._id
+  });
+  next
+});
+
 CompanySchema.virtual('internships', {
   ref: 'Internship',
   localField: '_id',
