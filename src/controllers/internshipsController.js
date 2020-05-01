@@ -36,15 +36,15 @@ export async function getInternships(req, res, next) {
  * @access  Public
  */
 export async function getInternship(req, res, next) {
-  const result = await findInternshipInDB(req.params.id);
-  if (!result) {
+  const internship = await InternshipModel.findById(req.params.id);
+  if (!internship) {
     return next(
       new ErrorResponse(`internship id ${req.params.id} doesn\'t exist`, 404)
     );
   } else {
     res.status(200).json({
       success: true,
-      data: result.internship
+      data: internship
     });
   }
 }
@@ -55,22 +55,11 @@ export async function getInternship(req, res, next) {
  * @access  Private
  */
 export async function createInternship(req, res, next) {
-  const internship = req.body;
-  const company = await InternshipModel.findOne({
-    name: `${internship.name}`
+  const internship = await InternshipModel.create(req.body);
+  res.status(201).json({
+    success: true,
+    data: internship
   });
-
-  if (company) {
-    const jobIdToAdd = internship.jobId;
-    company.internships.push(req.body.internship);
-    await company.save();
-    res.status(201).json({
-      success: true,
-      data: company.internships.filter(internship => internship.jobId == jobIdToAdd)
-    });
-  } else {
-    return next(new ErrorResponse('Company doesn\'t exist', 403));
-  }
 }
 
 /**
@@ -79,18 +68,17 @@ export async function createInternship(req, res, next) {
  * @access  Private
  */
 export async function updateInternship(req, res, next) {
-  const result = await findInternshipInDB(req.params.id);
-  if (result) {
-    const internship = result.internship;
-    const company = result.company;
-    internship.set(req.body);
-    await company.save();
+  const internship = await InternshipModel.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true
+  });
+  if (!internship) {
+    return next(new ErrorResponse(`internship id ${req.params.id} doesn't exist`, 404));
+  } else {
     res.status(200).json({
       success: true,
-      data: company.internships.id(internship.id)
+      data: internship
     });
-  } else {
-    return next(new ErrorResponse(`internship id ${req.params.id} doesn\'t exist`, 404));
   }
 }
 
@@ -100,17 +88,14 @@ export async function updateInternship(req, res, next) {
  * @access  Private
  */
 export async function deleteInternship(req, res, next) {
-  const result = await findInternshipInDB(req.params.id);
-  if (result) {
-    const internship = result.internship;
-    const company = result.company;
-    internship.remove();
-    await company.save();
-    res.status(200).json({
-      success: true
-    });
+  const internship = await InternshipModel.findByIdAndDelete(req.params.id);
+  if (!internship) {
+    return next(new ErrorResponse(`internship id ${req.params.id} doesn't exist`, 404));
   } else {
-    return next(new ErrorResponse('internship doesn\'t exist', 400));
+    res.status(200).json({
+      success: true,
+      data: internship
+    });
   }
 }
 
@@ -135,20 +120,20 @@ export async function getInternshipsInRadius(req, res, next) {
 
   // calculate radius in RAD 
   const unitLowerCase = unit.toLowerCase();
-  let raduis;
+  let radius;
   if (unitLowerCase === 'mi') { // if unit is `mi` use miles
-    raduis = distance / process.env.EARTH_RADIUS_MI;
+    radius = distance / process.env.EARTH_RADIUS_MI;
   } else if (unitLowerCase === 'km') {
-    raduis = distance / process.env.EARTH_RADIUS_KM; // default is KM
+    radius = distance / process.env.EARTH_RADIUS_KM; // default is KM
   } else {
     return next(new ErrorResponse('unit is not legal', 400));
   }
 
   const nearbyInternships = await InternshipModel.find({
-    'internships.geoPosition': {
+    'geoPosition': {
       $geoWithin: {
         $centerSphere: [
-          [long, lat], raduis
+          [long, lat], radius
         ]
       }
     }

@@ -12,7 +12,7 @@ router
   .route('/')
   .get(asyncMW(handleRequestMW(InternshipModel, {
     path: 'company',
-    select: 'name website phone email'
+    select: 'name'
   })), asyncMW(controller.getInternships))
   .post(asyncMW(controller.createInternship));
 
