@@ -10,10 +10,10 @@ const router = express.Router({
 
 router
   .route('/')
-  .get(asyncMW(handleRequestMW(InternshipModel, {
+  .get(handleRequestMW(InternshipModel, {
     path: 'company',
     select: 'name'
-  })), asyncMW(controller.getInternships))
+  }), asyncMW(controller.getInternships))
   .post(asyncMW(controller.createInternship));
 
 router

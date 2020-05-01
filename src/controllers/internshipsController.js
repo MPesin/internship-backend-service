@@ -10,29 +10,24 @@ import geocoder from '../utils/geocoder.js';
  * @access  Public
  */
 export async function getInternships(req, res, next) {
-  let query;
   if (req.params.companyId) {
     if (!companyExists(req.params.companyId)) {
       return next(new ErrorResponse(`The company ${req.params.companyId} doesn't exist.`));
     }
-    query = InternshipModel.find({
+
+    const result = await InternshipModel.find({
       company: req.params.companyId
     });
-  } else {
-    query = InternshipModel.find();
-  }
-  query.populate({
-    path: 'company',
-    select: 'name website phone email'
-  });
-  const result = await query;
 
-  res.status(200).json({
-    success: true,
-    count: result.length,
-    data: result
-  });
-  // res.status(200).json(req.handleRequest);
+    res.status(200).json({
+      success: true,
+      count: result.length,
+      data: result
+    });
+
+  } else {
+    res.status(200).json(req.handleRequest);
+  }
 }
 
 /**
