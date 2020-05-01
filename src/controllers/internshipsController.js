@@ -1,16 +1,20 @@
 import InternshipModel from '../models/internshipModel.js';
+import CompanyModel from '../models/companyModel.js';
 import ErrorResponse from '../utils/ErrorResponse.js';
 import geocoder from '../utils/geocoder.js';
 
 /**
  * Get all Internships
  * @route   GET /api/v1/internships
+ * @route   GET /api/v1/companies/:companyId/internships/
  * @access  Public
  */
 export async function getInternships(req, res, next) {
-
   let query;
   if (req.params.companyId) {
+    if (!companyExists(req.params.companyId)) {
+      return next(new ErrorResponse(`The company ${req.params.companyId} doesn't exist.`));
+    }
     query = InternshipModel.find({
       company: req.params.companyId
     });
@@ -25,6 +29,7 @@ export async function getInternships(req, res, next) {
 
   res.status(200).json({
     success: true,
+    count: result.length,
     data: result
   });
   // res.status(200).json(req.handleRequest);
@@ -36,7 +41,11 @@ export async function getInternships(req, res, next) {
  * @access  Public
  */
 export async function getInternship(req, res, next) {
-  const internship = await InternshipModel.findById(req.params.id);
+  const internship = await InternshipModel.findById(req.params.id).populate({
+    path: 'company',
+    select: 'name'
+  });
+
   if (!internship) {
     return next(
       new ErrorResponse(`internship id ${req.params.id} doesn\'t exist`, 404)
@@ -51,11 +60,21 @@ export async function getInternship(req, res, next) {
 
 /**
  * Create single Internship
- * @route   POST /api/v1/internships/
+ * @route   POST /api/v1/companies/:companyId/internships/
  * @access  Private
  */
 export async function createInternship(req, res, next) {
+  console.log(req.params.companyId);
+
+  if (!companyExists(req.params.companyId)) {
+    return next(new ErrorResponse(`The company ${req.params.companyId} doesn't exist.`));
+  }
+
+  // set the company property of the internship
+  req.body.company = req.params.companyId;
+
   const internship = await InternshipModel.create(req.body);
+
   res.status(201).json({
     success: true,
     data: internship
@@ -144,4 +163,10 @@ export async function getInternshipsInRadius(req, res, next) {
     count: nearbyInternships.length,
     data: nearbyInternships
   });
+}
+
+
+function companyExists(id) {
+  const company = CompanyModel.findById(id);
+  return (company != undefined);
 }

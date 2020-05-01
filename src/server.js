@@ -3,6 +3,7 @@ import path from 'path';
 import express from 'express';
 import morgan from 'morgan';
 import colors from 'colors';
+import fileUpload from 'express-fileupload';
 
 // import DB initializer
 import connectDB from '../config/db.js';
@@ -19,25 +20,25 @@ connectDB();
 
 const app = express();
 
-// attach body parser
-app.use(express.json());
-
-
-
-// set resources folder
-app.use(express.static(path.join(getRootDir(), 'resources')));
-
-
 // set logging middleware using the morgan logger in development
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+// attach body parser
+app.use(express.json());
+
+// mount file upload middleware
+app.use(fileUpload());
+
+// set static public folder
+app.use(express.static(path.join(process.cwd(), 'public')));
+
 // mount routers
 app.use('/api/v1/companies', companies);
 app.use('/api/v1/internships', internships);
 
-// mount middleware
+// mount error handler middleware
 app.use(errorHandler);
 
 // set port
@@ -53,12 +54,3 @@ process.on('unhandledRejection', (err, promis) => {
   // close and exit server
   server.close(() => process.exit(1))
 });
-
-// methods
-
-function getRootDir() {
-  const srcDirPath = path.dirname(
-    import.meta.url);
-  const lastSlashIndex = srcDirPath.lastIndexOf('/');
-  return srcDirPath.slice(0, lastSlashIndex)
-}

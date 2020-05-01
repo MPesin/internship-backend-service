@@ -93,18 +93,19 @@ InternshipSchema.index({
 });
 
 // check if there's no identical jobId in the company
-// InternshipSchema.pre('validate', async function (next) {
+InternshipSchema.pre('validate', async function (next) {
 
-//   const allCompanyInternships = await this.model('Company').findById(this.company).internships;
-//   const jobIds = allCompanyInternships.map(internship => internship.jobId);
-
-//   // check to see if there duplicants of the new jobId
-//   if (jobIds.filter(id => id === this.jobId).length > 1) {
-//     throw new ErrorResponse(`The jobId ${this.jobId} already exists in the database`, 403);
-//   }
-
-//   next();
-// });
+  const company = await this.model('Company').findById(this.company);
+  const internshipsInCompany = await this.model('Internship').find({
+    company: this.company
+  });
+  internshipsInCompany.forEach(internship => {
+    if (internship.jobId == this.jobId) {
+      return next(new ErrorResponse(`The jobId ${this.jobId} already exists in company '${company.name}'`, 403));
+    }
+  });
+  next();
+});
 
 // set the GeoJSON field
 InternshipSchema.pre('save', async function (next) {

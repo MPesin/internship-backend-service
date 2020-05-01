@@ -18,6 +18,11 @@ router
   .put(asyncMW(controller.updateCompany))
   .delete(asyncMW(controller.deleteCompany));
 
+// route photo upload
+router
+  .route('/:id/uploads/photo')
+  .put(asyncMW(controller.uploadPhotoCompany));
+
 // re-route into resource routers
 router.use('/:companyId/internships', internshipsRouter);
 
