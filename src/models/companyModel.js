@@ -1,10 +1,8 @@
 import mongoose from 'mongoose';
-import {
-  InternshipSchema
-} from './Internship.js';
+import slugify from 'slugify';
 
 const CompanySchema = new mongoose.Schema({
-  companyName: {
+  name: {
     type: String,
     required: [true, 'Please add a name'],
     unique: true,
@@ -33,14 +31,40 @@ const CompanySchema = new mongoose.Schema({
   photo: {
     type: String, // file name
     default: 'no-photo.jpg'
+  }
+}, {
+  timestamps: true,
+  toJSON: {
+    virtuals: true
   },
-  internships: {
-    type: [InternshipSchema]
-  },
-  createdOn: {
-    type: Date,
-    default: Date.now
+  toObject: {
+    virtuals: true
   }
 });
 
-export default mongoose.model('Company', CompanySchema);
+// create a company slug from the name
+CompanySchema.pre('save', function (next) {
+  this.slug = slugify(this.name, {
+    lower: true
+  });
+  next();
+});
+
+// cascade remove internships related to company when it's removed
+CompanySchema.pre('remove', async function (next) {
+  await this.model('Internship').deleteMany({
+    company: this._id
+  });
+  next
+});
+
+CompanySchema.virtual('internships', {
+  ref: 'Internship',
+  localField: '_id',
+  foreignField: 'company',
+  justOne: false
+});
+
+const companyModel = mongoose.model('Company', CompanySchema);
+
+export default companyModel;

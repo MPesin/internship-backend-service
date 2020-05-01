@@ -1,0 +1,76 @@
+[{
+    "jobId": 1234,
+    "requirements": [{
+        "description": "Finished High School",
+        "type": "must"
+      },
+      {
+        "description": "Knowledge of foreign language",
+        "type": "optional"
+      },
+      {
+        "description": "Good Level of English",
+        "type": "must"
+      },
+      {
+        "description": "Participate in debate contests",
+        "type": "advantage"
+      }
+    ],
+    "field": "Law",
+    "company": "5ea45ccba36def078c49dbdb",
+    "description": "Intern in contracts law",
+    "fullAddress": "233 Bay State Rd Boston MA 02215",
+    "estimatedEmploymentTime": 45
+  },
+  {
+    "jobId": 1235,
+    "requirements": [{
+        "description": "Finished High School",
+        "type": "must"
+      },
+      {
+        "description": "Knowledge of OO programming",
+        "type": "must"
+      },
+      {
+        "description": "Knowledge of Git",
+        "type": "advantage"
+      },
+      {
+        "description": "Experience with writing STD and STR documents",
+        "type": "optional"
+      }
+    ],
+    "description": "Intern for a QA position",
+    "field": "Software",
+    "company": "5ea45ccba36def078c49dbdd",
+    "fullAddress": "220 Pawtucket St, Lowell, MA 01854",
+    "estimatedEmploymentTime": 30
+  },
+  {
+    "jobId": 1111,
+    "requirements": [{
+        "description": "Finished High School",
+        "type": "must"
+      },
+      {
+        "description": "Knowledge of foreign language",
+        "type": "optional"
+      },
+      {
+        "description": "Good Level of English",
+        "type": "must"
+      },
+      {
+        "description": "Good math skills",
+        "type": "advantage"
+      }
+    ],
+    "field": "Finance",
+    "company": "5ea45ccba36def078c49dbdf",
+    "description": "Intern in dealing stocks",
+    "fullAddress": "123 Arlozorov, Tel Aviv, Israel, 844962",
+    "estimatedEmploymentTime": 150
+  }
+]

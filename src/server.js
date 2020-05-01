@@ -1,35 +1,45 @@
+// import modules
+import path from 'path';
 import express from 'express';
-import dotenv from 'dotenv';
 import morgan from 'morgan';
-import connectDB from '../config/db.js';
 import colors from 'colors';
+import fileUpload from 'express-fileupload';
 
-// route files
-import internships from './routes/internships.js';
-import companies from './routes/companies.js';
+// import DB initializer
+import connectDB from '../config/db.js';
 
+// import middleware
+import errorHandler from './middleware/errorMiddleware.js';
 
-// load env vars
-dotenv.config({
-  path: './config/config.env'
-});
+// import router files
+import internships from './routes/internshipsRouter.js';
+import companies from './routes/companiesRouter.js';
 
 // connect to database
 connectDB();
 
 const app = express();
 
-// body parser
-app.use(express.json())
-
 // set logging middleware using the morgan logger in development
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+// attach body parser
+app.use(express.json());
+
+// mount file upload middleware
+app.use(fileUpload());
+
+// set static public folder
+app.use(express.static(path.join(process.cwd(), 'public')));
+
 // mount routers
-app.use('/api/v1/internships', internships)
-app.use('/api/v1/companies', companies)
+app.use('/api/v1/companies', companies);
+app.use('/api/v1/internships', internships);
+
+// mount error handler middleware
+app.use(errorHandler);
 
 // set port
 const PORT = process.env.PORT || 5000;

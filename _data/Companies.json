@@ -1,0 +1,22 @@
+[{
+    "_id": "5ea45ccba36def078c49dbdb",
+    "name": "Attorneys Without Contracts",
+    "website": "https://lawcontracts.com",
+    "phone": "(123) 123-1234",
+    "email": "firstCareer@lawcontracts.com"
+  },
+  {
+    "_id": "5ea45ccba36def078c49dbdd",
+    "name": "QualityPeace",
+    "website": "https://testpeace.com",
+    "phone": "(111) 111-1111",
+    "email": "career@testpeace.com"
+  },
+  {
+    "_id": "5ea45ccba36def078c49dbdf",
+    "name": "Show Me The Money",
+    "website": "https://www.smtm.com",
+    "phone": "(123) 456-7890",
+    "email": "Career@smtm.com"
+  }
+]
