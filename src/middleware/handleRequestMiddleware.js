@@ -1,10 +1,64 @@
+export default function handleRequestMiddleware(model, populate) {
+  return async (req, res, next) => {
+
+    const queryFiltered = filterQuery(req.query);
+
+    const query = model.find(queryFiltered.query);
+
+    if (queryFiltered !== '') {
+      query.select(queryFiltered.select);
+    }
+
+    query.sort(queryFiltered.sort);
+
+    // pagination
+    const limit = queryFiltered.limit;
+    const page = queryFiltered.page;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await model.countDocuments();
+
+    const pagination = {};
+
+    query.skip(startIndex).limit(limit);
+
+    if (populate) {
+      query.populate(populate);
+    }
+
+    const results = await query;
+
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit
+      }
+    }
+
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit
+      }
+    }
+
+    req.handleRequest = {
+      success: true,
+      count: results.length,
+      pagination,
+      data: results
+    }
+
+    next();
+  };
+}
+
 /**
  * Filter the query from the request to the server.
  * @param {object} query the query property of the request sent to the server.
- * @param {string} [subdocument=''] to return a query for a specific subdocument.
- * @returns { { query: object, select: string } } an object with the properties 'query' - which is the query object, and 'selected' which is a string of the fields to select from the query seperated by `space`.
+ * @returns { { query: object, select: string, sort: string, page: int, limit: int } } an object with all the properties of the 'query'.
  */
-export function filterQuery(query, subdocument = '') {
+function filterQuery(query) {
   // fields to remove from the query before filtering with regex
   const removeFields = ['select', 'sort', 'page', 'limit'];
 
@@ -19,11 +73,6 @@ export function filterQuery(query, subdocument = '') {
   // filter query
   let queryString = JSON.stringify(reqQuery);
 
-  // if the prefix isn't empty add it to the query fields 
-  if (subdocument !== '') {
-    queryString = queryString.replace(/(?<=(^{|,)")\b(\w+)\b/g, match => `${subdocument}.${match}`);
-  }
-
   // add `$` before gt, gte, lt, lte or in
   queryString = queryString.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
 
@@ -35,15 +84,6 @@ export function filterQuery(query, subdocument = '') {
   let selected = [];
   if (querySelect) {
     selected = querySelect.split(',');
-  }
-
-  // if prefix exists add it to the selected
-  if (subdocument !== '') {
-    if (selected.length > 0) {
-      selected.forEach((field, index) => selected[index] = `${subdocument}.${field}`);
-    } else {
-      selected.push(subdocument);
-    }
   }
 
   const selectedString = selected.join(' ');

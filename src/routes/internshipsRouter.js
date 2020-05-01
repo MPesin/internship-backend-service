@@ -1,22 +1,29 @@
 import express from 'express';
-import asyncMiddleware from "../middleware/asyncMiddleware.js";
+import asyncMW from "../middleware/asyncMiddleware.js";
+import InternshipModel from '../models/internshipModel.js';
+import handleRequestMW from '../middleware/handleRequestMiddleware.js';
 import * as controller from '../controllers/internshipsController.js';
 
-const router = express.Router();
+const router = express.Router({
+  mergeParams: true
+});
 
 router
   .route('/')
-  .get(asyncMiddleware(controller.getInternships))
-  .post(asyncMiddleware(controller.createInternship));
+  .get(asyncMW(handleRequestMW(InternshipModel, {
+    path: 'company',
+    select: 'name website phone email'
+  })), asyncMW(controller.getInternships))
+  .post(asyncMW(controller.createInternship));
 
 router
   .route('/:id')
-  .get(asyncMiddleware(controller.getInternship))
-  .put(asyncMiddleware(controller.updateInternship))
-  .delete(asyncMiddleware(controller.deleteInternship));
+  .get(asyncMW(controller.getInternship))
+  .put(asyncMW(controller.updateInternship))
+  .delete(asyncMW(controller.deleteInternship));
 
 router
   .route('/radius/:address/:distance/:unit')
-  .get(asyncMiddleware(controller.getInternshipsInRadius));
+  .get(asyncMW(controller.getInternshipsInRadius));
 
 export default router;

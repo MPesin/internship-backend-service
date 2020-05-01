@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import slugify from 'slugify';
 
 const CompanySchema = new mongoose.Schema({
-  companyName: {
+  name: {
     type: String,
     required: [true, 'Please add a name'],
     unique: true,
@@ -31,11 +31,7 @@ const CompanySchema = new mongoose.Schema({
   photo: {
     type: String, // file name
     default: 'no-photo.jpg'
-  },
-  internships: [{
-    type: mongoose.ObjectId,
-    ref: 'Internship'
-  }]
+  }
 }, {
   timestamps: true,
   toJSON: {
@@ -48,18 +44,18 @@ const CompanySchema = new mongoose.Schema({
 
 // create a company slug from the name
 CompanySchema.pre('save', function (next) {
-  this.slug = slugify(this.companyName, {
+  this.slug = slugify(this.name, {
     lower: true
   });
   next();
 });
 
-// CompanySchema.virtual('internships', {
-//   ref: 'Internship',
-//   localField: '_id',
-//   foreignField: 'company',
-//   justOne: false
-// });
+CompanySchema.virtual('internships', {
+  ref: 'Internship',
+  localField: '_id',
+  foreignField: 'company',
+  justOne: false
+});
 
 const companyModel = mongoose.model('Company', CompanySchema);
 
