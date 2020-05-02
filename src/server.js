@@ -4,6 +4,7 @@ import express from 'express';
 import morgan from 'morgan';
 import colors from 'colors';
 import fileUpload from 'express-fileupload';
+import cookieParser from 'cookie-parser';
 
 // import DB initializer
 import connectDB from '../config/db.js';
@@ -26,11 +27,15 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+// mount cookie parser
+app.use(cookieParser());
+
 // attach body parser
 app.use(express.json());
 
 // mount file upload middleware
 app.use(fileUpload());
+
 
 // set static public folder
 app.use(express.static(path.join(process.cwd(), 'public')));

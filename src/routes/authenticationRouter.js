@@ -1,7 +1,6 @@
 import express from 'express';
 import asyncMW from '../middleware/asyncMiddleware.js';
 import * as controller from '../controllers/authenticationController.js';
-import UserModel from '../models/userModel.js';
 
 const router = express.Router();
 

@@ -7,25 +7,16 @@ import ErrorResponse from '../utils/ErrorResponse.js';
  * @access  Public
  */
 export async function registerUser(req, res, next) {
-
   const user = await userModel.create(req.body);
-
-  // create token
-  const token = user.getSignedJwtToken();
-
-  res.status(200).json({
-    success: true,
-    token
-  });
+  sendResponse(user, 200, res);
 }
 
 /**
- * Register a new user
+ * Login a user
  * @route   POST /api/v1/auth/login
  * @access  Public
  */
 export async function loginUser(req, res, next) {
-
   const {
     email,
     password
@@ -51,10 +42,34 @@ export async function loginUser(req, res, next) {
     return next(new ErrorResponse('Invalid credentials', 401));
   }
 
+  sendResponse(user, 200, res);
+}
+
+/**
+ * Send authentication response that includes the token and a secure cookie.
+ * @param {*} user the user that's being authenticated
+ * @param {*} statusCode http status code of the response
+ * @param {*} res the response
+ */
+function sendResponse(user, statusCode, res) {
+  // create token
   const token = user.getSignedJwtToken();
 
-  res.status(200).json({
-    success: true,
-    token
-  });
+  const expireDelta = process.env.JWT_COOKIE_EXPIRE * 86400000; // 86400000 = 1000[milliseconds] * 60[seconds] * 60[minutes] * 24[hours]
+
+  const options = {
+    expires: new Date(Date.now() + expireDelta),
+    httpOnly: true
+  }
+
+  if (process.env.NODE_ENV === 'production') {
+    options.secure = true;
+  }
+
+  res.status(statusCode)
+    .cookie('token', token, options)
+    .json({
+      success: true,
+      token
+    });
 }
