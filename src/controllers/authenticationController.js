@@ -51,7 +51,7 @@ export async function loginUser(req, res, next) {
  * @access  Private
  */
 export async function getCurrentUser(req, res, next) {
-  const user = await userModel.findById(req.userId);
+  const user = req.user;
   res.status(200)
     .json({
       success: true,
