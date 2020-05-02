@@ -19,7 +19,7 @@ export default function errorHandler(err, req, res, next) {
   // handle mongoose double id
   if (err.code === 11000) {
     const message = `Duplicate item entered, \'${JSON.stringify(err.keyValue).replace(/"+/g, '')}\' already exists`;
-    error = new ErrorResponse(message, 404);
+    error = new ErrorResponse(message, 409);
   }
 
   // handle mangoose validation error
