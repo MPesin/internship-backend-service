@@ -46,10 +46,24 @@ export async function loginUser(req, res, next) {
 }
 
 /**
+ * Get current logged in user
+ * @route   GET /api/v1/auth/current
+ * @access  Private
+ */
+export async function getCurrentUser(req, res, next) {
+  const user = await userModel.findById(req.userId);
+  res.status(200)
+    .json({
+      success: true,
+      user
+    });
+}
+
+/**
  * Send authentication response that includes the token and a secure cookie.
  * @param {*} user the user that's being authenticated
  * @param {*} statusCode http status code of the response
- * @param {*} res the response
+ * @param {*} res the response to the http request
  */
 function sendResponse(user, statusCode, res) {
   // create token

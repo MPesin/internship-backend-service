@@ -1,15 +1,14 @@
 import express from 'express';
 import asyncMW from '../middleware/asyncMiddleware.js';
 import * as controller from '../controllers/authenticationController.js';
+import protect from '../middleware/protectMiddleware.js';
 
 const router = express.Router();
 
-router
-  .route('/register')
-  .post(asyncMW(controller.registerUser));
+router.post('/register', asyncMW(controller.registerUser));
 
-router
-  .route('/login')
-  .post(asyncMW(controller.loginUser));
+router.post('/login', asyncMW(controller.loginUser));
+
+router.get('/current', asyncMW(protect), asyncMW(controller.getCurrentUser));
 
 export default router;
