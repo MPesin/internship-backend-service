@@ -14,6 +14,7 @@ import errorHandler from './middleware/errorMiddleware.js';
 // import router files
 import internships from './routes/internshipsRouter.js';
 import companies from './routes/companiesRouter.js';
+import auths from './routes/authenticationRouter.js';
 
 // connect to database
 connectDB();
@@ -37,6 +38,7 @@ app.use(express.static(path.join(process.cwd(), 'public')));
 // mount routers
 app.use('/api/v1/companies', companies);
 app.use('/api/v1/internships', internships);
+app.use('/api/v1/auth', auths);
 
 // mount error handler middleware
 app.use(errorHandler);
