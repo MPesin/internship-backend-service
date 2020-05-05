@@ -1,0 +1,50 @@
+[{
+  "_id": "5eb1bffae4e3d504cecb1659",
+  "firstName": "Jhon",
+  "lastName": "Doe",
+  "email": "some@thing.com",
+  "role": "intern",
+  "password": "123456"
+}, {
+  "_id": "5eb1bffae4e3d504cecb165a",
+  "firstName": "Aka",
+  "lastName": "Loga",
+  "email": "akaloga@gfive.com",
+  "role": "recruiter",
+  "password": "123456"
+}, {
+  "_id": "5eb1bffae4e3d504cecb165b",
+  "firstName": "Michael",
+  "lastName": "Pesin",
+  "email": "mikelpesin@gmail.com",
+  "role": "recruiter",
+  "password": "pex21mp12"
+}, {
+  "_id": "5eb1bffae4e3d504cecb165c",
+  "firstName": "Alex",
+  "lastName": "Jhones",
+  "email": "alex@Jns.com",
+  "role": "recruiter",
+  "password": "123456"
+}, {
+  "_id": "5eb1bffae4e3d504cecb165d",
+  "firstName": "Jhone",
+  "lastName": "Wick",
+  "email": "crime@inc.org",
+  "role": "intern",
+  "password": "123456"
+}, {
+  "_id": "5eb1bffae4e3d504cecb165e",
+  "firstName": "Bruce",
+  "lastName": "Wane",
+  "email": "imbatman@WaneEnt.com",
+  "role": "recruiter",
+  "password": "cave101"
+}, {
+  "_id": "5eb1bffae4e3d504cecb165f",
+  "firstName": "Regular",
+  "lastName": "Joe",
+  "email": "joe1980@gmail.com",
+  "role": "visitor",
+  "password": "000000"
+}]

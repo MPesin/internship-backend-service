@@ -31,6 +31,11 @@ const CompanySchema = new mongoose.Schema({
   photo: {
     type: String, // file name
     default: 'no-photo.jpg'
+  },
+  user: {
+    type: mongoose.ObjectId,
+    ref: 'User',
+    required: true
   }
 }, {
   timestamps: true,

@@ -36,7 +36,22 @@ export async function getCompany(req, res, next) {
  * @access  Private
  */
 export async function createCompany(req, res, next) {
+
+  const currentUser = req.user;
+
+  // set the user in the body
+  req.body.user = currentUser.id
+
+  const publishedCompany = CompanyModel.findOne({
+    user: currentUser.id
+  });
+
+  if (publishedCompany && req.user.role !== 'admin') {
+    return next(new ErrorResponse(`User ${currentUser.fullName}, ID ${currentUser.id}, already listed company ${publishedCompany.name}`), 400);
+  }
+
   const company = await CompanyModel.create(req.body);
+
   res.status(201).json({
     success: true,
     data: company
@@ -49,14 +64,20 @@ export async function createCompany(req, res, next) {
  * @access  Private
  */
 export async function updateCompany(req, res, next) {
-  const company = await CompanyModel.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true
-  });
+  let company = await CompanyModel.findById(req.params.id);
 
   if (!company) {
     return next(new ErrorResponse(`company id ${req.params.id} doesn't exist`, 404));
   }
+
+  if (company.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(new ErrorResponse(`User ${req.user.fullName} ID ${req.user.id} is not authorized to change this company`, 401));
+  }
+
+  company = await CompanyModel.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true
+  });
 
   res.status(200).json({
     success: true,
