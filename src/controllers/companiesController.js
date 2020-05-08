@@ -70,7 +70,7 @@ export async function updateCompany(req, res, next) {
     return next(new ErrorResponse(`company id ${req.params.id} doesn't exist`, 404));
   }
 
-  if (company.user.toString() !== req.user.id && req.user.role !== 'admin') {
+  if (company.admin.toString() !== req.user.id && req.user.role !== 'admin') {
     return next(new ErrorResponse(`User ${req.user.fullName} ID ${req.user.id} is not authorized to change this company`, 401));
   }
 

@@ -32,11 +32,15 @@ const CompanySchema = new mongoose.Schema({
     type: String, // file name
     default: 'no-photo.jpg'
   },
-  user: {
+  admin: {
     type: mongoose.ObjectId,
     ref: 'User',
     required: true
-  }
+  },
+  recruiters: [{
+    type: mongoose.ObjectId,
+    ref: 'User'
+  }]
 }, {
   timestamps: true,
   toJSON: {
