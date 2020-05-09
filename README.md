@@ -52,10 +52,10 @@ The following tables describe the permissions of each role and what CRUD functio
 ###Users Database CRUD Permissions
 | Role | Intern | Recruiter | Company Admin | Admin |
 | :---:| :---: | :---: | :---: | :---: |
-|Intern\*|READ<br>CREATE<br>UPDATE<br>DELETE|READ|READ
+|Intern\*|READ<br>CREATE<br>UPDATE<br>DELETE||
 |Recruiter\*|READ|READ<br>CREATE<br>UPDATE<br>DELETE|READ
-|Company Admin\*|READ|READ<br>CREATE<br>UPDATE<br>DELETE|READ<br>CREATE<br>UPDATE<br>DELETE||
-|Admin\*\*|READ<br>CREATE<br>UPDATE<br>DELETE|READ<br>CREATE<br>UPDATE<br>DELETE|READ<br>CREATE<br>UPDATE<br>DELETE|READ|
+|Company Admin\*|READ|READ<br>CREATE<br>DELETE|READ<br>CREATE<br>UPDATE<br>DELETE||
+|Admin\*\*|READ<br>CREATE<br>DELETE|READ<br>CREATE<br>DELETE|READ<br>CREATE<br>DELETE|READ<br>UPDATE|
 
 \* Applies only to itself and data owned by the user; e.g. an _Intern_ can only create an account for himself and update the information of his own account.  
 \*\* Applies to all the documents in database.

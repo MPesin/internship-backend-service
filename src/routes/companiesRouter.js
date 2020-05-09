@@ -4,6 +4,7 @@ import * as controller from '../controllers/companiesController.js';
 import handleRequestMW from '../middleware/handleRequestMiddleware.js';
 import CompanyModel from '../models/companyModel.js';
 import internshipsRouter from '../routes/internshipsRouter.js';
+import usersRouter from './usersRouter.js';
 import {
   protect,
   authorize
@@ -11,28 +12,25 @@ import {
 
 const router = express.Router();
 
+router.use(asyncMW(protect));
+
 router
   .route('/')
   .get(
-    asyncMW(protect),
     asyncMW(handleRequestMW(CompanyModel, 'internships')),
     asyncMW(controller.getCompanies))
   .post(
-    asyncMW(protect),
     authorize('companyAdmin'),
     asyncMW(controller.createCompany));
 
 router
   .route('/:id')
   .get(
-    asyncMW(protect),
     asyncMW(controller.getCompany))
   .put(
-    asyncMW(protect),
     authorize('companyAdmin'),
     asyncMW(controller.updateCompany))
   .delete(
-    asyncMW(protect),
     authorize('companyAdmin'),
     asyncMW(controller.deleteCompany));
 
@@ -40,11 +38,11 @@ router
 router
   .route('/:id/uploads/photo')
   .put(
-    asyncMW(protect),
     authorize('companyAdmin'),
     asyncMW(controller.uploadPhotoCompany));
 
 // re-route into resource routers
 router.use('/:companyId/internships', internshipsRouter);
+router.use('/:companyId/users', usersRouter);
 
 export default router;

@@ -40,7 +40,7 @@ export async function createCompany(req, res, next) {
   const currentUser = req.user;
 
   // set the user in the body
-  req.body.user = currentUser.id
+  req.body.admin = currentUser.id
 
   const publishedCompany = CompanyModel.findOne({
     user: currentUser.id

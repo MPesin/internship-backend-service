@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import userModel from '../models/userModel.js';
+import companyAdmin from '../models/userModel.js';
 import ErrorResponse from '../utils/ErrorResponse.js';
 import sendEmail from '../utils/sendEmail.js';
 
@@ -63,7 +64,7 @@ export async function getCurrentUser(req, res, next) {
 
 /**
  * Forgot password
- * @route   GET /api/v1/auth/forgotpassword
+ * @route   POST /api/v1/auth/forgotpassword
  * @access  Public
  */
 export async function forgotPassword(req, res, next) {
@@ -114,7 +115,7 @@ export async function forgotPassword(req, res, next) {
 
 /**
  * Reset Password
- * @route   GET /api/v1/auth/resetPassword/:resettoken
+ * @route   PUT /api/v1/auth/resetPassword/:resettoken
  * @access  Public
  */
 export async function resetPassword(req, res, next) {
@@ -143,6 +144,86 @@ export async function resetPassword(req, res, next) {
   await user.save();
 
   sendTokenResponse(user, 200, res);
+}
+
+/**
+ * Update user name and email
+ * @route   PUT /api/v1/auth/updateuserinfo
+ * @access  Private
+ */
+export async function updateUserInfo(req, res, next) {
+
+  const {
+    fullName,
+    email
+  } = req.body;
+
+  const user = await userModel.findById(req.user.id);
+
+  user.fullName = fullName;
+  user.email = email;
+
+  // use save to invoke virtual 'fullName'
+  await user.save();
+
+  res.status(200)
+    .json({
+      success: true,
+      user
+    });
+}
+
+/**
+ * Update user password
+ * @route   PUT /api/v1/auth/updateuserpassword
+ * @access  Private
+ */
+export async function updateUserPassword(req, res, next) {
+
+  const {
+    currentPassword,
+    newPassword
+  } = req.body;
+
+  const user = await userModel.findById(req.user.id).select('+password');
+
+  const currentValid = user.matchPassword(currentPassword);
+
+  if (!currentValid) {
+    return next(new ErrorResponse('Current password incorrect', 401));
+  }
+
+  user.password = newPassword;
+
+  await user.save();
+
+  sendTokenResponse(user, 200, res);
+}
+
+
+/**
+ * Delete a user
+ * @route   DELETE /api/v1/auth/
+ * @access  Private
+ */
+export async function deleteUser(req, res, next) {
+
+  const user = await userModel.findById(req.user.id);
+  user.remove();
+
+  let message = `remover user ${user.fullName}`;
+  if (user.role === 'companyAdmin') {
+    const company = await companyAdmin.findOne({
+      admin: user.id
+    });
+    company.remove();
+    message = ` and removed associated company ${company.name}`
+  }
+
+  res.status(200).json({
+    success: true,
+    message
+  });
 }
 
 /**

@@ -33,7 +33,7 @@ const UserSchema = mongoose.Schema({
   role: {
     type: String,
     enum: ['intern', 'recruiter', 'companyAdmin'],
-    default: 'visitor'
+    required: [true, 'Please enter the user role']
   },
   resetPasswordToken: String,
   resetPasswordExpire: Date
