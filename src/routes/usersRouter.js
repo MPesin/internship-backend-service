@@ -27,7 +27,7 @@ router
 router
   .route('/:id')
   .get(
-    authorize('companyAdmin', 'admin'),
+    authorize('recruiter', 'companyAdmin', 'admin'),
     asyncMW(controller.getUser)
   )
   .delete(
