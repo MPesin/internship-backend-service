@@ -5,6 +5,7 @@ import coloers from 'colors';
 import connectDB from './config/db.js';
 import companyModel from './src/models/companyModel.js';
 import internshipModel from './src/models/internshipModel.js';
+import userModel from './src/models/userModel.js';
 
 // connect database
 connectDB();
@@ -12,6 +13,7 @@ connectDB();
 // load data from file
 const companies = loadJsonDataFromFile('Companies');
 const internships = loadJsonDataFromFile('Internships');
+const users = loadJsonDataFromFile('Users');
 
 // start main
 main();
@@ -22,9 +24,11 @@ async function main() {
   if (process.argv.includes('-l')) {
     await loadData(internshipModel, internships);
     await loadData(companyModel, companies);
+    await loadData(userModel, users);
   } else if (process.argv.includes('-d')) {
     await deleteAllData(internshipModel);
     await deleteAllData(companyModel);
+    await deleteAllData(userModel);
   } else {
     console.log('flags :\n-l - to load data to database\n-d - to delete all data from the database');
   }

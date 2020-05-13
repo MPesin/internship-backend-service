@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 
 
 const UserSchema = mongoose.Schema({
@@ -31,7 +32,7 @@ const UserSchema = mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['intern', 'recruiter', 'visitor'],
+    enum: ['intern', 'recruiter', 'companyAdmin'],
     default: 'visitor'
   },
   resetPasswordToken: String,
@@ -58,6 +59,11 @@ UserSchema.virtual('fullName')
 
 // encrypt password
 UserSchema.pre('save', async function (next) {
+  // hash password only if it was changed
+  if (!this.isModified('password')) {
+    next();
+  }
+
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(this.password, salt);
   this.password = hash;
@@ -74,6 +80,22 @@ UserSchema.methods.getSignedJwtToken = function () {
 
 UserSchema.methods.matchPassword = async function (passwordToMatch) {
   return await bcrypt.compare(passwordToMatch, this.password);
+}
+
+UserSchema.methods.getResetPasswordToken = function () {
+  // generate token
+  const resetToken = crypto.randomBytes(20).toString('hex');
+
+  // hash token and set to field
+  this.resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  // Set password expire to 10 min
+  this.resetPasswordExpire = Date.now() + 600000; // 600000 = 10[minutes] * 60[seconds] * 1000[milliseconds]
+
+  return resetToken;
 }
 
 const userModel = mongoose.model('User', UserSchema);

@@ -13,4 +13,8 @@ router.post('/login', asyncMW(controller.loginUser));
 
 router.get('/current', asyncMW(protect), asyncMW(controller.getCurrentUser));
 
+router.post('/forgotpassword', asyncMW(controller.forgotPassword));
+
+router.put('/resetpassword/:resettoken', asyncMW(controller.resetPassword));
+
 export default router;

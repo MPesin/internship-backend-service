@@ -11,7 +11,9 @@ import geocoder from '../utils/geocoder.js';
  */
 export async function getInternships(req, res, next) {
   if (req.params.companyId) {
-    if (!companyExists(req.params.companyId)) {
+    const company = await CompanyModel.findById(req.params.companyId);
+
+    if (!company) {
       return next(new ErrorResponse(`The company ${req.params.companyId} doesn't exist.`));
     }
 
@@ -59,10 +61,11 @@ export async function getInternship(req, res, next) {
  * @access  Private
  */
 export async function createInternship(req, res, next) {
-  console.log(req.params.companyId);
 
-  if (!companyExists(req.params.companyId)) {
-    return next(new ErrorResponse(`The company ${req.params.companyId} doesn't exist.`));
+  const valid = await validateRequest(req, req.params.companyId);
+
+  if (!valid.success) {
+    return next(new ErrorResponse(valid.message, valid.status));
   }
 
   // set the company property of the internship
@@ -82,10 +85,19 @@ export async function createInternship(req, res, next) {
  * @access  Private
  */
 export async function updateInternship(req, res, next) {
-  const internship = await InternshipModel.findByIdAndUpdate(req.params.id, req.body, {
+
+  let internship = await InternshipModel.findById(req.params.id);
+  const valid = await validateRequest(req, internship.company);
+
+  if (!valid.success) {
+    return next(new ErrorResponse(valid.message, valid.status));
+  }
+
+  internship = await InternshipModel.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true
   });
+
   if (!internship) {
     return next(new ErrorResponse(`internship id ${req.params.id} doesn't exist`, 404));
   } else {
@@ -102,7 +114,16 @@ export async function updateInternship(req, res, next) {
  * @access  Private
  */
 export async function deleteInternship(req, res, next) {
-  const internship = await InternshipModel.findByIdAndDelete(req.params.id);
+
+  let internship = await InternshipModel.findById(req.params.id);
+  const valid = await validateRequest(req, internship.company);
+
+  if (!valid.success) {
+    return next(new ErrorResponse(valid.message, valid.status));
+  }
+
+  internship = await InternshipModel.findByIdAndDelete(req.params.id);
+
   if (!internship) {
     return next(new ErrorResponse(`internship id ${req.params.id} doesn't exist`, 404));
   } else {
@@ -161,7 +182,29 @@ export async function getInternshipsInRadius(req, res, next) {
 }
 
 
-function companyExists(id) {
-  const company = CompanyModel.findById(id);
-  return (company != undefined);
+async function validateRequest(req, companyId) {
+  const response = {
+    success: true,
+    message: '',
+    status: 200
+  };
+  const company = await CompanyModel.findById(companyId);
+
+  if (company == undefined) {
+    response.success = false;
+    response.message = `The company ${req.params.companyId} doesn't exist.`;
+    response.status = 400;
+  } else {
+    const recruiters = company.recruiters;
+    const userId = req.user.id;
+    console.log(userId != company.admin);
+
+    if (userId != company.admin && (recruiters.length !== 0 && !recruiters.includes(userId))) {
+      response.success = false;
+      response.message = `Not authorized to access this route.`;
+      response.status = 401;
+    }
+  }
+
+  return response;
 }

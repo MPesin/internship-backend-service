@@ -13,19 +13,36 @@ const router = express.Router();
 
 router
   .route('/')
-  .get(asyncMW(handleRequestMW(CompanyModel, 'internships')), asyncMW(controller.getCompanies))
-  .post(asyncMW(protect), authorize('admin', 'recruiter'), asyncMW(controller.createCompany));
+  .get(
+    asyncMW(protect),
+    asyncMW(handleRequestMW(CompanyModel, 'internships')),
+    asyncMW(controller.getCompanies))
+  .post(
+    asyncMW(protect),
+    authorize('companyAdmin'),
+    asyncMW(controller.createCompany));
 
 router
   .route('/:id')
-  .get(asyncMW(controller.getCompany))
-  .put(asyncMW(protect), authorize('admin', 'recruiter'), asyncMW(controller.updateCompany))
-  .delete(asyncMW(protect), authorize('admin', 'recruiter'), asyncMW(controller.deleteCompany));
+  .get(
+    asyncMW(protect),
+    asyncMW(controller.getCompany))
+  .put(
+    asyncMW(protect),
+    authorize('companyAdmin'),
+    asyncMW(controller.updateCompany))
+  .delete(
+    asyncMW(protect),
+    authorize('companyAdmin'),
+    asyncMW(controller.deleteCompany));
 
 // route photo upload
 router
   .route('/:id/uploads/photo')
-  .put(asyncMW(protect), authorize('admin', 'recruiter'), asyncMW(controller.uploadPhotoCompany));
+  .put(
+    asyncMW(protect),
+    authorize('companyAdmin'),
+    asyncMW(controller.uploadPhotoCompany));
 
 // re-route into resource routers
 router.use('/:companyId/internships', internshipsRouter);
