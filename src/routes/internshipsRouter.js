@@ -12,38 +12,34 @@ const router = express.Router({
   mergeParams: true
 });
 
+router.use(asyncMW(protect));
+
 router
   .route('/')
   .get(
-    asyncMW(protect),
     handleRequestMW(InternshipModel, {
       path: 'company',
       select: 'name'
     }),
     asyncMW(controller.getInternships))
   .post(
-    asyncMW(protect),
     authorize('companyAdmin', 'recruiter'),
     asyncMW(controller.createInternship));
 
 router
   .route('/:id')
   .get(
-    asyncMW(protect),
     asyncMW(controller.getInternship))
   .put(
-    asyncMW(protect),
     authorize('companyAdmin', 'recruiter'),
     asyncMW(controller.updateInternship))
   .delete(
-    asyncMW(protect),
     authorize('companyAdmin', 'recruiter'),
     asyncMW(controller.deleteInternship));
 
 router
   .route('/radius/:address/:distance/:unit')
   .get(
-    asyncMW(protect),
     asyncMW(controller.getInternshipsInRadius));
 
 export default router;

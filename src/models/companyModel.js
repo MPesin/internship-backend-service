@@ -51,6 +51,12 @@ const CompanySchema = new mongoose.Schema({
   }
 });
 
+CompanySchema.index({
+  admin: 1
+}, {
+  unique: true
+})
+
 // create a company slug from the name
 CompanySchema.pre('save', function (next) {
   this.slug = slugify(this.name, {
