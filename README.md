@@ -9,14 +9,14 @@ Interactions with the server require authentication that's given based of the us
 The server also uses geocoding which allows the use of location based search.
 
 I hope you'll enjoy using this app as much as I enjoyed making it (:
-##Databases
+## Databases
 There are three main database collections:
 
 - Users
 - Companies
 - Internships
 
-####Users
+#### Users
 The _Users_ database holds information on all the users. There are four types of users roles:
 
 - Intern
@@ -27,29 +27,29 @@ The _Users_ database holds information on all the users. There are four types of
 Each company has one _Company Admin_ and can have several _Recruiters_.
 The _Admin_ role can only be created manually by the owner of the server.
 
-####Companies
+#### Companies
 The _Companies_ database contains all information regarding the company, who is the admin and a list of the recruiters that work for the company.
 
-####Internships
+#### Internships
 The _Internships_ database contains all information regarding the internships. Each internship is associated with a company.
 
-##Roles & Permissions
+## Roles & Permissions
 The following tables describe the permissions of each role and what CRUD function he/she can invoke on each database:
-###Internships Database CRUD Permissions
-| Role | CREATE | READ | UPDATE | DELETE |
-| :---:| :---: | :---: | :---: | :---: |
-|Intern\*| |X|
-|Recruiter\*|X|X|X|X|
-|Company Admin\*|X|X|X|X|
-|Admin\*\*| |X|
-###Companies Database CRUD Permissions
+### Internships Database CRUD Permissions
+| Role          | CREATE | READ | UPDATE | DELETE |
+| :---:         | :---:  | :---: | :---: | :---:  |
+|Intern\*       |        | X     |       |        |
+|Recruiter\*    | X      | X     | X     | X      |
+|Company Admin\*| X      | X     | X     | X      |
+|Admin\*\*      |        | X     |       |        |
+### Companies Database CRUD Permissions
 | Role | CREATE | READ | UPDATE | DELETE |
 | :---:| :---: | :---: | :---: | :---: |
 |Intern\*| |X|
 |Recruiter\*| |X|
 |Company Admin\*|X|X|X|X|
 |Admin\*\*| |X| | |
-###Users Database CRUD Permissions
+### Users Database CRUD Permissions
 | Role | Intern | Recruiter | Company Admin | Admin |
 | :---:| :---: | :---: | :---: | :---: |
 |Intern\*|READ<br>CREATE<br>UPDATE<br>DELETE|READ|READ
