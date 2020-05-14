@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import companyModel from '../models/companyModel.js';
 
 
 const UserSchema = mongoose.Schema({
@@ -68,6 +69,7 @@ UserSchema.pre('save', async function (next) {
   const hash = await bcrypt.hash(this.password, salt);
   this.password = hash;
 });
+
 
 // sign JWT and return
 UserSchema.methods.getSignedJwtToken = function () {
