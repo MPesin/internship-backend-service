@@ -10,6 +10,8 @@ import cookieParser from 'cookie-parser';
 import sanitize from 'express-mongo-sanitize';
 import helmet from 'helmet';
 import xssClean from 'xss-clean';
+import ratelimit from 'express-rate-limit';
+import hpp from 'hpp';
 
 // import DB initializer
 import connectDB from '../config/db.js';
@@ -48,8 +50,20 @@ app.use(sanitize());
 // set security headers
 app.use(helmet());
 
-// protect against xss attacks
+// protect against xss presistent attacks
 app.use(xssClean());
+
+// prevent http params pollution
+app.use(hpp());
+
+// limit the rate of repeated requests
+const limiter = rateLimit({
+  windowMs: 10 * 1000 * 60, // limit in a time window of 10 minuets
+  max: 100 // max requests in the time window
+});
+
+// apply limit to all requests
+app.use(limiter);
 
 // set static public folder
 app.use(express.static(path.join(process.cwd(), 'public')));
