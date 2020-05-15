@@ -10,7 +10,7 @@ import cookieParser from 'cookie-parser';
 import sanitize from 'express-mongo-sanitize';
 import helmet from 'helmet';
 import xssClean from 'xss-clean';
-import ratelimit from 'express-rate-limit';
+import rateLimit from 'express-rate-limit';
 import hpp from 'hpp';
 
 // import DB initializer
@@ -59,7 +59,7 @@ app.use(hpp());
 // limit the rate of repeated requests
 const limiter = rateLimit({
   windowMs: 10 * 1000 * 60, // limit in a time window of 10 minuets
-  max: 100 // max requests in the time window
+  max: 100, // max requests in the time window
 });
 
 // apply limit to all requests
