@@ -2,50 +2,48 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import companyModel from '../models/companyModel.js';
-
 
 const UserSchema = mongoose.Schema({
   firstName: {
     type: String,
     required: [true, 'First name is required'],
-    minlength: 1
+    minlength: 1,
   },
   lastName: {
     type: String,
     required: [true, 'Last name is required'],
-    minlength: 1
+    minlength: 1,
   },
   email: {
     type: String,
     unique: [true, 'Email already exists'],
     required: [true, 'First name is required'],
     match: [
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-      'Please enter a vailid email'
-    ]
+      /^(([^<>()\[\]\\.,;:\s@']+(\.[^<>()\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      'Please enter a vailid email',
+    ],
   },
   password: {
     type: String,
     required: [true, 'Please enter a password'],
     select: false,
-    minlength: 6
+    minlength: 6,
   },
   role: {
     type: String,
     enum: ['intern', 'recruiter', 'companyAdmin'],
-    required: [true, 'Please enter the user role']
+    required: [true, 'Please enter the user role'],
   },
   resetPasswordToken: String,
-  resetPasswordExpire: Date
+  resetPasswordExpire: Date,
 }, {
   timestamps: true,
   toJSON: {
-    virtuals: true
+    virtuals: true,
   },
   toObject: {
-    virtuals: true
-  }
+    virtuals: true,
+  },
 });
 
 // create virtal property for full name
@@ -70,19 +68,45 @@ UserSchema.pre('save', async function (next) {
   this.password = hash;
 });
 
+// if user belongs to a company, remove him\her from that company 
+UserSchema.pre('remove', async function (next) {
+  const removedId = this._id;
+  const removedRole = this.role;
+  let company;
+  if (removedRole === 'recruiter') {
+    company = await this.model('Company').findOne({
+      recruiters: removedId
+    });
+    if (company) {
+      const index = company.recruiters.indexOf(removedId);
+      company.recruiters.splice(index, 1);
+      await company.save();
+    }
+  }
+
+  if (removedRole === 'companyAdmin') {
+    company = await this.model('Company').findOne({
+      admin: removedId
+    });
+    company.admin = undefined;
+    await company.save();
+  }
+});
 
 // sign JWT and return
 UserSchema.methods.getSignedJwtToken = function () {
   return jwt.sign({
-    id: this._id
-  }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE
-  });
-}
+      id: this._id,
+    },
+    process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRE,
+    }
+  );
+};
 
 UserSchema.methods.matchPassword = async function (passwordToMatch) {
   return await bcrypt.compare(passwordToMatch, this.password);
-}
+};
 
 UserSchema.methods.getResetPasswordToken = function () {
   // generate token
@@ -98,7 +122,7 @@ UserSchema.methods.getResetPasswordToken = function () {
   this.resetPasswordExpire = Date.now() + 600000; // 600000 = 10[minutes] * 60[seconds] * 1000[milliseconds]
 
   return resetToken;
-}
+};
 
 const userModel = mongoose.model('User', UserSchema);
 
