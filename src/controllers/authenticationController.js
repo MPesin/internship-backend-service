@@ -49,6 +49,24 @@ export async function loginUser(req, res, next) {
 }
 
 /**
+ * Logout current user and clear cookie
+ * @route   GET /api/v1/auth/current
+ * @access  Private
+ */
+export async function logoutUser(req, res, next) {
+  res.cookie('token', 'none', {
+    expires: new Date(Date.now() + 10 * 1000), // set expire to 10 seconds
+    httpOnly: true
+  });
+
+  res.status(200)
+    .json({
+      success: true,
+      data: {}
+    });
+}
+
+/**
  * Get current logged in user
  * @route   GET /api/v1/auth/current
  * @access  Private

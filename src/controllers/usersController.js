@@ -128,7 +128,7 @@ export async function createUser(req, res, next) {
  */
 export async function deleteUser(req, res, next) {
   if (!req.params.companyId) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role === 'companyAdmin') {
       return next(new ErrorResponse('Not authorized to access this route', 401));
     }
   } else {

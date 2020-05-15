@@ -6,6 +6,11 @@ import colors from 'colors';
 import fileUpload from 'express-fileupload';
 import cookieParser from 'cookie-parser';
 
+// security modules
+import sanitize from 'express-mongo-sanitize';
+import helmet from 'helmet';
+import xssClean from 'xss-clean';
+
 // import DB initializer
 import connectDB from '../config/db.js';
 
@@ -37,6 +42,14 @@ app.use(express.json());
 // mount file upload middleware
 app.use(fileUpload());
 
+// sanitize data
+app.use(sanitize());
+
+// set security headers
+app.use(helmet());
+
+// protect against xss attacks
+app.use(xssClean());
 
 // set static public folder
 app.use(express.static(path.join(process.cwd(), 'public')));
@@ -54,12 +67,17 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 // start listening on 'PORT'
-const server = app.listen(PORT, console.log(`Server Running in ${process.env.NODE_ENV} on port ${PORT}`.yellow.bold));
+const server = app.listen(
+  PORT,
+  console.log(
+    `Server Running in ${process.env.NODE_ENV} on port ${PORT}`.yellow.bold
+  )
+);
 
-// Handle all unhandeled rejections 
+// Handle all unhandeled rejections
 process.on('unhandledRejection', (err, promis) => {
   console.log(`Error: ${err.message}`);
 
   // close and exit server
-  server.close(() => process.exit(1))
+  server.close(() => process.exit(1));
 });

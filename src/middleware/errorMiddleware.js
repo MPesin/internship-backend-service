@@ -12,7 +12,6 @@ export default function errorHandler(err, req, res, next) {
 
   // handle mongoose bad ObjectId
   if (err.name === 'CastError') {
-    const message = `Resourse of id ${err.value} doesn\'t exist`;
     error = new ErrorResponse(message, 404);
   }
 
