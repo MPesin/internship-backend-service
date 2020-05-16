@@ -103,13 +103,17 @@ export async function createUser(req, res, next) {
   const user = await userModel.create(req.body);
 
   if (company) {
-    user.role = 'recruiter';
-    await user.save();
-
-    if (company.recruiters) {
-      company.recruiters.push(user);
+    if (user.role === 'recruiter') {
+      if (company.recruiters) {
+        company.recruiters.push(user._id);
+      } else {
+        company.recruiters = [user._id];
+      }
+    } else if (user.role === 'companyAdmin' &&
+      req.user.role === 'admin') {
+      company.admin = user._id;
     } else {
-      company.recruiters = [user];
+      return next(new ErrorResponse('Not authorized to create this user', 401));
     }
     await company.save();
   }
