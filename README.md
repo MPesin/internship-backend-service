@@ -98,7 +98,7 @@ This is a minor but necessary addition to prevent an attacker from polluting the
 
 ## API Documentation
 
-Documentation for the API, created using Postman, can be found [here](https://documenter.getpostman.com/view/11046904/Szmk1FUm?version=latest#996dbb93-4ad3-4ba1-b19c-2368997ff7bb).
+Documentation for the API, created using Postman, can be found [here](https://documenter.getpostman.com/view/11046904/Szmk1FUm?version=latest).
 
 # Release Notes
 

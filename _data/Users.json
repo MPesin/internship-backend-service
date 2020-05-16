@@ -13,13 +13,6 @@
   "role": "recruiter",
   "password": "123456"
 }, {
-  "_id": "5eb1bffae4e3d504cecb165b",
-  "firstName": "Michael",
-  "lastName": "Pesin",
-  "email": "mikelpesin@gmail.com",
-  "role": "recruiter",
-  "password": "pex21mp12"
-}, {
   "_id": "5eb1bffae4e3d504cecb165c",
   "firstName": "Alex",
   "lastName": "Jhones",
