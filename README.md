@@ -96,6 +96,30 @@ This is a minor but necessary addition to prevent an attacker from polluting the
 
 # Using The Server
 
+## Usage
+
+Rename the file `config/config.to_update.env` to `config/config.env` and update the values and settings in the file.
+
+### Run the App
+
+Install the dependencies
+
+```
+npm install
+```
+
+#### Run in Development Mode
+
+```
+npm run dev
+```
+
+#### Run in Production Mode
+
+```
+npm start
+```
+
 ## API Documentation
 
 Documentation for the API, created using Postman, can be found [here](https://documenter.getpostman.com/view/11046904/Szmk1FUm?version=latest).
