@@ -10,6 +10,36 @@ The server also uses geocoding which allows the use of location based search.
 
 I hope you'll enjoy using this app as much as I enjoyed making it (:
 
+# Using The Server
+
+## Usage
+
+Rename the file `config/config.to_update.env` to `config/config.env` and update the values and settings in the file.
+
+### Run the App
+
+Install the dependencies
+
+```
+npm install
+```
+
+#### Run in Development Mode
+
+```
+npm run dev
+```
+
+#### Run in Production Mode
+
+```
+npm start
+```
+
+## API Documentation
+
+Documentation for the API, created using Postman, can be found [here](https://documenter.getpostman.com/view/11046904/Szmk1FUm?version=latest).
+
 ## Databases
 
 There are three main database collections:
@@ -93,36 +123,6 @@ The server is set by default to allow 100 requests in a time period of 10 minute
 ### HTTP Request Parameters Pollution Security
 
 This is a minor but necessary addition to prevent an attacker from polluting the HTTP request parameters using [Hpp](https://www.npmjs.com/package/hpp) module.
-
-# Using The Server
-
-## Usage
-
-Rename the file `config/config.to_update.env` to `config/config.env` and update the values and settings in the file.
-
-### Run the App
-
-Install the dependencies
-
-```
-npm install
-```
-
-#### Run in Development Mode
-
-```
-npm run dev
-```
-
-#### Run in Production Mode
-
-```
-npm start
-```
-
-## API Documentation
-
-Documentation for the API, created using Postman, can be found [here](https://documenter.getpostman.com/view/11046904/Szmk1FUm?version=latest).
 
 # Release Notes
 
