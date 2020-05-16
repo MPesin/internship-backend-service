@@ -193,13 +193,15 @@ async function validateRequest(req, companyId) {
   if (company == undefined) {
     response.success = false;
     response.message = `The company ${req.params.companyId} doesn't exist.`;
-    response.status = 400;
+    response.status = 404;
   } else {
     const recruiters = company.recruiters;
     const userId = req.user.id;
-    console.log(userId != company.admin);
+    const userRole = req.user.role;
 
-    if (userId != company.admin && (recruiters.length !== 0 && !recruiters.includes(userId))) {
+    if (userId != company.admin &&
+      (recruiters.length !== 0 && !recruiters.includes(userId)) &&
+      userRole !== 'admin') {
       response.success = false;
       response.message = `Not authorized to access this route.`;
       response.status = 401;

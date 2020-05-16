@@ -49,7 +49,7 @@ The following tables describe the permissions of each role and what CRUD functio
 |     Intern\*      |        |  X   |        |        |
 |   Recruiter\*\*   |   X    |  X   |   X    |   X    |
 | Company Admin\*\* |   X    |  X   |   X    |   X    |
-|    Admin\*\*\*    |        |  X   |        |        |
+|    Admin\*\*\*    |   X    |  X   |   X    |   X    |
 
 ### Companies Database CRUD Permissions
 
@@ -58,7 +58,7 @@ The following tables describe the permissions of each role and what CRUD functio
 |     Intern\*      |        |  X   |
 |   Recruiter\*\*   |        |  X   |
 | Company Admin\*\* |   X    |  X   |   X    |   X    |
-|    Admin\*\*\*    |        |  X   |        |        |
+|    Admin\*\*\*    |   X    |  X   |   X    |   X    |
 
 ### Users Database CRUD Permissions
 
@@ -71,7 +71,7 @@ The following tables describe the permissions of each role and what CRUD functio
 
 \* Applies only to itself and data owned by the user; e.g. an _Intern_ can only create an account for himself and update the information of his own account.  
 \*\* Applies to all documents within a company  
-\*\*\* Applies to all the documents in database.
+\*\*\* Applies to all the documents in the database.
 
 ## Security
 
@@ -79,10 +79,10 @@ The following tables describe the permissions of each role and what CRUD functio
 
 The server uses two modules to protect against XSS attacks:
 
-1. [Helmet](https://www.npmjs.com/package/helmet) - sets HTTP Headers that help protect against reflected XSS playload (non-presistent attaks).
-2. [XSS Clean](https://www.npmjs.com/package/xss-clean) - protect against persistent attaks, e.g. injection of script into the database.
+1. [Helmet](https://www.npmjs.com/package/helmet) - sets HTTP Headers that help protect against reflected XSS payload (non-persistent attacks).
+2. [XSS Clean](https://www.npmjs.com/package/xss-clean) - protect against persistent attacks, e.g. injection of script into the database.
 
-### NoSQL Injection Attaks Security
+### NoSQL Injection Attacks Security
 
 Protection against MongoDB operator injection is done using the [Express Mongoose Sanitize](https://www.npmjs.com/package/express-mongo-sanitize) module.
 
@@ -92,7 +92,7 @@ The server is set by default to allow 100 requests in a time period of 10 minute
 
 ### HTTP Request Parameters Pollution Security
 
-This is a minor but necessery addition to prevent an attaker from polluting the HTTP request parameters using [Hpp](https://www.npmjs.com/package/hpp) module.
+This is a minor but necessary addition to prevent an attacker from polluting the HTTP request parameters using [Hpp](https://www.npmjs.com/package/hpp) module.
 
 # Using The Server
 

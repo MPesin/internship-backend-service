@@ -21,7 +21,7 @@ export async function getCompany(req, res, next) {
   const company = await CompanyModel.findById(req.params.id);
 
   if (!company) {
-    return next(new ErrorResponse(`company id ${req.params.id} doesn't exist`, 404));
+    return next(new ErrorResponse(`Company id ${req.params.id} doesn't exist`, 404));
   }
 
   res.status(200).json({
@@ -35,8 +35,8 @@ export async function getCompany(req, res, next) {
  * @route   POST /api/v1/companies/
  * @access  Private
  */
-export async function createCompany(req, res, next) {
 
+export async function createCompany(req, res, next) {
   const currentUser = req.user;
 
   // set the user in the body
@@ -67,11 +67,11 @@ export async function updateCompany(req, res, next) {
   let company = await CompanyModel.findById(req.params.id);
 
   if (!company) {
-    return next(new ErrorResponse(`company id ${req.params.id} doesn't exist`, 404));
+    return next(new ErrorResponse(`Company id ${req.params.id} doesn't exist`, 404));
   }
 
   if (company.admin.toString() !== req.user.id && req.user.role !== 'admin') {
-    return next(new ErrorResponse(`User ${req.user.fullName} ID ${req.user.id} is not authorized to change this company`, 401));
+    return next(new ErrorResponse(`User ${req.user.fullName} id ${req.user.id} is not authorized to change this company`, 401));
   }
 
   company = await CompanyModel.findByIdAndUpdate(req.params.id, req.body, {
@@ -95,7 +95,7 @@ export async function deleteCompany(req, res, next) {
   const company = await CompanyModel.findById(req.params.id);
 
   if (!company) {
-    return next(new ErrorResponse(`company id ${req.params.id} doesn't exist`, 404));
+    return next(new ErrorResponse(`Company id ${req.params.id} doesn't exist`, 404));
   }
   // seperate remove from find to trigger 'remove' middleware
   company.remove();
@@ -116,7 +116,7 @@ export async function uploadPhotoCompany(req, res, next) {
   const company = await CompanyModel.findById(req.params.id);
 
   if (!company) {
-    return next(new ErrorResponse(`company id ${req.params.id} doesn't exist`, 404));
+    return next(new ErrorResponse(`Company id ${req.params.id} doesn't exist`, 404));
   }
 
   if (!req.files) {

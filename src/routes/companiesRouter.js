@@ -20,7 +20,7 @@ router
     asyncMW(handleRequestMW(CompanyModel, 'internships')),
     asyncMW(controller.getCompanies))
   .post(
-    authorize('companyAdmin'),
+    authorize('admin', 'companyAdmin'),
     asyncMW(controller.createCompany));
 
 router
@@ -28,17 +28,17 @@ router
   .get(
     asyncMW(controller.getCompany))
   .put(
-    authorize('companyAdmin'),
+    authorize('admin', 'companyAdmin'),
     asyncMW(controller.updateCompany))
   .delete(
-    authorize('companyAdmin'),
+    authorize('admin', 'companyAdmin'),
     asyncMW(controller.deleteCompany));
 
 // route photo upload
 router
   .route('/:id/uploads/photo')
   .put(
-    authorize('companyAdmin'),
+    authorize('admin', 'companyAdmin'),
     asyncMW(controller.uploadPhotoCompany));
 
 // re-route into resource routers

@@ -23,7 +23,7 @@ router
     }),
     asyncMW(controller.getInternships))
   .post(
-    authorize('companyAdmin', 'recruiter'),
+    authorize('admin', 'companyAdmin', 'recruiter'),
     asyncMW(controller.createInternship));
 
 router
@@ -31,10 +31,10 @@ router
   .get(
     asyncMW(controller.getInternship))
   .put(
-    authorize('companyAdmin', 'recruiter'),
+    authorize('admin', 'companyAdmin', 'recruiter'),
     asyncMW(controller.updateInternship))
   .delete(
-    authorize('companyAdmin', 'recruiter'),
+    authorize('admin', 'companyAdmin', 'recruiter'),
     asyncMW(controller.deleteInternship));
 
 router
