@@ -1,16 +1,16 @@
-The internship-backend-service provides a backend server for maintaining information about internship opportunities, and information about internees looking for new opportunities.
+The project provides an API for maintaining information about internship opportunities, and information about internees looking for new opportunities.
 
 The server is developed in NodeJS; the database is MongoDB managed by the Mongoose ODM.
 
-# About the Server
+# About the API
 
-The server provides encrypted data storage of all information. All communication with the server use SSL protocol with XSS protection.
-Interactions with the server require authentication that's given based of the user's role (admin, internee, recruiter, HR etc.).
-The server also uses geocoding which allows the use of location based search.
+The API provides encrypted data storage of all information. All communication with the API use SSL protocol with XSS protection.
+Interactions with the API require authentication that's given based of the user's role (admin, internee, recruiter, HR etc.).
+The API also uses geocoding which allows the use of location based search.
 
 I hope you'll enjoy using this app as much as I enjoyed making it (:
 
-# Using The Server
+# Using The API
 
 ## Usage
 
@@ -58,7 +58,7 @@ The _Users_ database holds information on all the users. There are four types of
 - Admin
 
 Each company has one _Company Admin_ and can have several _Recruiters_.
-The _Admin_ role can only be created manually by the owner of the server.
+The _Admin_ role can only be created manually by the owner of the service.
 
 #### Companies
 
@@ -107,7 +107,7 @@ The following tables describe the permissions of each role and what CRUD functio
 
 ### XSS Security
 
-The server uses two modules to protect against XSS attacks:
+The API uses two modules to protect against XSS attacks:
 
 1. [Helmet](https://www.npmjs.com/package/helmet) - sets HTTP Headers that help protect against reflected XSS payload (non-persistent attacks).
 2. [XSS Clean](https://www.npmjs.com/package/xss-clean) - protect against persistent attacks, e.g. injection of script into the database.
@@ -118,7 +118,7 @@ Protection against MongoDB operator injection is done using the [Express Mongoos
 
 ### Request Limit Security
 
-The server is set by default to allow 100 requests in a time period of 10 minutes using the [Rate Limit Mongo](https://www.npmjs.com/package/rate-limit-mongo) module.
+The API is set by default to allow 100 requests in a time period of 10 minutes using the [Rate Limit Mongo](https://www.npmjs.com/package/rate-limit-mongo) module.
 
 ### HTTP Request Parameters Pollution Security
 
